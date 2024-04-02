@@ -14,6 +14,12 @@
         <action
             android:id="@+id/action_FirstFragment_to_SecondFragment"
             app:destination="@id/SecondFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_createClassFragment"
+            app:destination="@id/createClassFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_joinClassFragment2"
+            app:destination="@id/joinClassFragment2" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
@@ -25,4 +31,13 @@
             android:id="@+id/action_SecondFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/createClassFragment"
+        android:name="com.example.classattendance.CreateClassFragment"
+        android:label="fragment_create_class"
+        tools:layout="@layout/fragment_create_class" />
+    <fragment
+        android:id="@+id/joinClassFragment2"
+        android:name="com.example.classattendance.JoinClassFragment"
+        android:label="JoinClassFragment" />
 </navigation>
