@@ -7,15 +7,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.classattendance.R;
-import com.example.classattendance.model.Classroom;
+import com.example.classattendance.model.SimpleClass;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHolder> {
-    private List<Classroom> data;
+    private List<SimpleClass> data;
 
-    public ClassAdapter(List<Classroom> data) {
+    public ClassAdapter(List<SimpleClass> data) {
         this.data = data;
     }
 
@@ -31,7 +32,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ClassViewHolder classViewHolder, int i) {
-        Classroom data = this.data.get(i);
+        SimpleClass data = this.data.get(i);
         classViewHolder.className.setText(data.getName());
         classViewHolder.classSub.setText(data.getSubject());
 
