@@ -47,6 +47,7 @@ dependencies {
 
     // https://mvnrepository.com/artifact/de.hdodenhof/circleimageview
     implementation("de.hdodenhof:circleimageview:3.1.0")
-
-
+    implementation("com.google.code.gson:gson:(insert latest version)")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
