@@ -4,7 +4,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -12,15 +17,70 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.example.classattendance.databinding.ActivityMainBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    DrawerLayout drawLayout;
+    ImageButton buttonDrawerToggle;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_main);
+        drawLayout = findViewById(R.id.drawerLayout);
+        buttonDrawerToggle = findViewById(R.id.buttonDrawerToggle);
+        navigationView = findViewById(R.id.nav_view);
+
+        buttonDrawerToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawLayout.open();
+            }
+        });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int itemId = menuItem.getItemId();
+
+                if(itemId == R.id.nav_school){
+                    Toast.makeText(MainActivity.this, "School Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_calendar){
+                    Toast.makeText(MainActivity.this, "Calendar Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_Class1){
+                    Toast.makeText(MainActivity.this, "Class1 Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_Class2){
+                    Toast.makeText(MainActivity.this, "Class2 Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_Class3){
+                    Toast.makeText(MainActivity.this, "Class3 Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_class_passed){
+                    Toast.makeText(MainActivity.this, "Class-passed Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_folder){
+                    Toast.makeText(MainActivity.this, "Folder Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_setting){
+                    Toast.makeText(MainActivity.this, "Setting Clicked", Toast.LENGTH_SHORT).show();
+                }
+                if(itemId == R.id.nav_help){
+                    Toast.makeText(MainActivity.this, "Help Clicked", Toast.LENGTH_SHORT).show();
+                }
+
+                drawLayout.close();
+
+                return false;
+            }
+        });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
