@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
 import com.example.classattendance.model.SimpleClass;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
