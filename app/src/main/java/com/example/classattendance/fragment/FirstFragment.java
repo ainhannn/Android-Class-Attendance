@@ -1,4 +1,4 @@
-package com.example.classattendance;
+package com.example.classattendance.fragment;
 
 import static android.content.ContentValues.TAG;
 
@@ -18,6 +18,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.classattendance.ClassActivity;
+import com.example.classattendance.R;
 import com.example.classattendance.api.UserAPI;
 import com.example.classattendance.databinding.FragmentFirstBinding;
 import com.example.classattendance.model.SimpleClass;

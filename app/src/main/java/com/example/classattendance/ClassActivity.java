@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.classattendance.fragment.classitems.FragmentAttendance;
+import com.example.classattendance.fragment.classitems.FragmentNotification;
+import com.example.classattendance.fragment.classitems.FragmentPeople;
 import com.example.classattendance.recycler.VPAdapter;
 import com.google.android.material.tabs.TabLayout;
 
