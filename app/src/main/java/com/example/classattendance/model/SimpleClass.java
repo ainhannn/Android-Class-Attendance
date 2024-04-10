@@ -15,6 +15,8 @@ public class SimpleClass {
 
     public SimpleClass() {}
 
+    public SimpleClass(String name, String subject) {}
+
     public int getId() {
         return id;
     }

@@ -1,8 +1,10 @@
-package com.example.classattendance;
+package com.example.classattendance.fragment;
 
 import static android.content.ContentValues.TAG;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +18,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.classattendance.ClassActivity;
+import com.example.classattendance.R;
 import com.example.classattendance.api.UserAPI;
 import com.example.classattendance.databinding.FragmentFirstBinding;
 import com.example.classattendance.model.SimpleClass;
@@ -31,7 +35,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class FirstFragment extends Fragment {
+public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickListener {
 
     private FragmentFirstBinding binding;
     private RecyclerView recyclerView;
@@ -41,7 +45,6 @@ public class FirstFragment extends Fragment {
     private BottomSheetDialog bottomSheetDialog;
     private Context context;
     private TextView joinClass, createClass;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,19 +62,30 @@ public class FirstFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_class);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter = new ClassAdapter(data,(e)->{});
+        // Sample data
+        data = new ArrayList<>();
+        data.add(new SimpleClass("Class 1", "Subject 1"));
+        data.add(new SimpleClass("Class 2", "Subject 2"));
+        data.add(new SimpleClass("Class 3", "Subject 3"));
+        data.add(new SimpleClass("Class 4", "Subject 4"));
+        data.add(new SimpleClass("Class 5", "Subject 5"));
+        data.add(new SimpleClass("Class 6", "Subject 6"));
+        data.add(new SimpleClass("Class 7", "Subject 7"));
+        data.add(new SimpleClass("Class 8", "Subject 8"));
+
+        adapter = new ClassAdapter(data, this);
         recyclerView.setAdapter(adapter);
 
         joinClass = bottomSheetDialog.findViewById(R.id.join_class);
         createClass = bottomSheetDialog.findViewById(R.id.create_class);
 
-        joinClass.setOnClickListener(v->{
+        joinClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             NavHostFragment.findNavController(FirstFragment.this)
                     .navigate(R.id.action_FirstFragment_to_joinClassFragment2);
         });
 
-        createClass.setOnClickListener(v->{
+        createClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             NavHostFragment.findNavController(FirstFragment.this)
                     .navigate(R.id.action_FirstFragment_to_createClassFragment);
@@ -85,12 +99,18 @@ public class FirstFragment extends Fragment {
     }
 
     @Override
+    public void onItemClick(SimpleClass classroom) {
+        Intent intent = new Intent(getContext(), ClassActivity.class);
+        intent.putExtra("class_name", classroom.getName());
+        intent.putExtra("class_subject", classroom.getSubject());
+        startActivity(intent);
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
     }
-
-
 
     private void loadData() {
         // login or register
@@ -102,6 +122,7 @@ public class FirstFragment extends Fragment {
         UserAPI userAPI = NetworkUtil.self().getRetrofit().create(UserAPI.class);
         Call<User> call = userAPI.login(uid);
         call.enqueue(new Callback<User>() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
@@ -109,20 +130,16 @@ public class FirstFragment extends Fragment {
                     Log.d(TAG, "onResponse: " + user.getName());
 
                     if (user != null) {
-                        data = new ArrayList<>();
-
-                        for (SimpleClass c : user.getCreatedClasses()) {
-                            data.add(c);
-                        }
-
-                        adapter = new ClassAdapter(data,(e)->{});
-                        recyclerView.setAdapter(adapter);
+                        data.clear();
+                        data.addAll(user.getCreatedClasses());
+                        adapter.notifyDataSetChanged();
                     }
 
                 } else {
                     Log.e(TAG, "onResponse: " + response.errorBody().toString());
                 }
             }
+
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.e(TAG, "onFailure: " + t.getMessage());
