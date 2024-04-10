@@ -4,8 +4,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.classattendance.R;
 import com.example.classattendance.model.SimpleClass;
 
@@ -15,9 +17,16 @@ import java.util.List;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHolder> {
     private List<SimpleClass> data;
+    private OnItemClickListener listener;
 
-    public ClassAdapter(List<SimpleClass> data) {
+    // Define interface for item click
+    public interface OnItemClickListener {
+        void onItemClick(SimpleClass classroom);
+    }
+
+    public ClassAdapter(List<SimpleClass> data, OnItemClickListener listener) {
         this.data = data;
+        this.listener = listener;
     }
 
 
@@ -32,10 +41,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ClassViewHolder classViewHolder, int i) {
-        SimpleClass data = this.data.get(i);
-        classViewHolder.className.setText(data.getName());
-        classViewHolder.classSub.setText(data.getSubject());
-
+        final SimpleClass data = this.data.get(i);
+        classViewHolder.bind(data, listener);
     }
 
     @Override
@@ -51,6 +58,23 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
             super(itemView);
             className = itemView.findViewById(R.id.class_name);
             classSub = itemView.findViewById(R.id.class_sub);
+        }
+
+        public void bind(final SimpleClass classroom, final OnItemClickListener listener) {
+            // Set data to views
+            className.setText(classroom.getName());
+            classSub.setText(classroom.getSubject());
+
+            // Set click listener
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        // Invoke onItemClick method of the listener
+                        listener.onItemClick(classroom);
+                    }
+                }
+            });
         }
     }
 
