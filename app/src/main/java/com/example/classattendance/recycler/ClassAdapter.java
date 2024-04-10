@@ -16,8 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHolder> {
-    private List<SimpleClass> data;
-    private OnItemClickListener listener;
+    private final List<SimpleClass> data;
+    private final OnItemClickListener listener;
 
     // Define interface for item click
     public interface OnItemClickListener {
@@ -66,13 +66,10 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
             classSub.setText(classroom.getSubject());
 
             // Set click listener
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (listener != null) {
-                        // Invoke onItemClick method of the listener
-                        listener.onItemClick(classroom);
-                    }
+            itemView.setOnClickListener(view -> {
+                if (listener != null) {
+                    // Invoke onItemClick method of the listener
+                    listener.onItemClick(classroom);
                 }
             });
         }

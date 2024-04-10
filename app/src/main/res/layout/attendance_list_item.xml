@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="12dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginVertical="10dp"
+    android:layout_marginHorizontal="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="35dp"
+            android:id="@+id/listIndex"
+            android:text="1"
+            android:textSize="25sp"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="25dp"/>
+
+        <TextView
+            android:layout_width="210dp"
+            android:layout_height="30dp"
+            android:id="@+id/listTime"
+            android:text="23:59:59 - 31/12/2024"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_toEndOf="@+id/listIndex"/>
+
+        <ImageView
+            android:id="@+id/iconPresent"
+            android:layout_width="25dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/listTime"
+            android:layout_toEndOf="@+id/listIndex"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/present"/>
+
+        <TextView
+            android:id="@+id/present"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_below="@+id/listTime"
+            android:layout_toEndOf="@+id/iconPresent"
+            android:layout_marginStart="10dp"
+            android:text="12"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/iconLate"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/listTime"
+            android:layout_toEndOf="@+id/present"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="50dp"
+            android:src="@drawable/late"/>
+
+        <TextView
+            android:id="@+id/late"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_below="@+id/listTime"
+            android:layout_toEndOf="@+id/iconLate"
+            android:layout_marginStart="6dp"
+            android:text="12"
+            android:textSize="25sp" />
+
+        <ImageView
+            android:id="@+id/iconQR"
+            android:layout_width="45dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="30dp"
+            android:layout_toEndOf="@+id/listTime"
+            android:src="@drawable/qrcode"/>
+
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>
