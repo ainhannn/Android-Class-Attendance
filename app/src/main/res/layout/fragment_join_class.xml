@@ -97,7 +97,7 @@
 			android:hint="Class code">
 
 			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/class_code_edit_text"
+				android:id="@+id/class_code"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content" />
 		</com.google.android.material.textfield.TextInputLayout>
@@ -147,6 +147,13 @@
 			android:layout_marginTop="32dp"
 			android:gravity="left"
 			tools:ignore="RtlHardcoded" />
+
+		<com.google.android.material.button.MaterialButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="20dp"
+			android:id="@+id/join_class_button"
+			android:text="Join class" />
 
 
 	</LinearLayout>

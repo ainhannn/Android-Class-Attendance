@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
@@ -13,10 +14,10 @@
 		android:paddingHorizontal="8dp"
 		android:paddingVertical="4dp"
 		android:hint="Class name (required)">
+
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			/>
+			android:layout_height="wrap_content" android:id="@+id/class_name_cre" />
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<com.google.android.material.textfield.TextInputLayout
@@ -26,10 +27,10 @@
 		android:paddingHorizontal="8dp"
 		android:paddingVertical="4dp"
 		android:hint="Section">
+
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			/>
+			android:layout_height="wrap_content" android:id="@+id/section_cre" />
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<com.google.android.material.textfield.TextInputLayout
@@ -39,10 +40,10 @@
 		android:paddingHorizontal="8dp"
 		android:paddingVertical="4dp"
 		android:hint="Room">
+
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			/>
+			android:layout_height="wrap_content" android:id="@+id/room_cre"/>
 	</com.google.android.material.textfield.TextInputLayout>
 
 	<com.google.android.material.textfield.TextInputLayout
@@ -52,9 +53,26 @@
 		android:paddingHorizontal="8dp"
 		android:paddingVertical="4dp"
 		android:hint="Subject">
+
 		<com.google.android.material.textfield.TextInputEditText
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			/>
+			android:id="@+id/subject_cre"/>
 	</com.google.android.material.textfield.TextInputLayout>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp">
+
+		<com.google.android.material.button.MaterialButton
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Create class"
+			android:id="@+id/create_class_btn"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+	</androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>
