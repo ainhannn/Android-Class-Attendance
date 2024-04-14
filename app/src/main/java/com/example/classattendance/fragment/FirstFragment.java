@@ -164,13 +164,15 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
 
     @Override
     public void onLongClick(SimpleClass classroom) {
-        //lấy user ->
+        //lấy user -> từ store ở mobile
+        // check user id với id của giáo viên nếu trùng set lại text là "archive" nếu không thì "join" và set lại sự kiện khi goị api tương ứng
         btnActionSheetDialog.setOnClickListener(v -> {
             if (classroom.isArchived()) {
                 Log.e("err", "archived");
             } else {
                 Log.e("err", "not archived");
             }
+
             bottomSheetClassItemDialog.dismiss();
         });
         // xử lý nếu là lớp đã tham gia thì rời, nếu là lớp tạo thì lưu trữ
