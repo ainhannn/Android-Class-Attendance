@@ -5,7 +5,8 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	tools:context=".fragment.CreateClassFragment"
-	android:orientation="vertical">
+	android:orientation="vertical"
+	android:background="#FFFFFF">
 
 	<com.google.android.material.textfield.TextInputLayout
 		android:id="@+id/class_name"

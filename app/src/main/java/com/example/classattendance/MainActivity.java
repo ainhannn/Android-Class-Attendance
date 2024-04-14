@@ -4,13 +4,19 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.example.classattendance.databinding.ActivityMainBinding;
+import com.example.classattendance.fragment.CreateClassFragment;
+import com.example.classattendance.fragment.FirstFragment;
+import com.example.classattendance.fragment.JoinClassFragment;
 import com.google.android.material.navigation.NavigationView;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +46,29 @@ public class MainActivity extends AppCompatActivity {
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Fragment fragment = null;
+            int id = item.getItemId();
+            if (id == R.id.nav_school) {
+                fragment = new FirstFragment();
+            } else if (id == R.id.nav_calendar) {
+                fragment = new JoinClassFragment();
+            } else if (id == R.id.nav_class_passed) {
+                fragment = new CreateClassFragment();
+            } else if (id == R.id.nav_folder) {
+                fragment = new FirstFragment();
+            } else if (id == R.id.nav_setting) {
+                fragment = new FirstFragment();
+            } else if (id == R.id.nav_help) {
+                fragment = new FirstFragment();
+            }
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, fragment).commit(); // Use the correct container ID
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        });
     }
 
     @Override
