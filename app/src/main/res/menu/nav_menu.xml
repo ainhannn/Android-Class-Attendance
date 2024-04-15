@@ -13,10 +13,9 @@
 
         <item
             android:id="@+id/nav_calendar"
-            android:title="Lich"
+            android:title="Bảng tin"
             android:icon="@drawable/calendar"
             android:padding="10dp" />
-
 
     </group>
 

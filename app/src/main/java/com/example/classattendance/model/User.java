@@ -8,10 +8,11 @@ import java.util.List;
 public class User {
     private int id;
     private Date time;
+    @SerializedName("UID")
     private String uid;
     private String name;
-    public List<SimpleClass> createdClasses;
-    public List<SimpleClass> joinedClasses;
+    private List<SimpleClass> createdClasses;
+    private List<SimpleClass> joinedClasses;
 
     public User() {}
 
