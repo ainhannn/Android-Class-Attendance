@@ -1,9 +1,11 @@
 package com.example.classattendance.fragment.classitems;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -27,14 +29,7 @@ public class FragmentAttendance extends Fragment {
         attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
         attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
         attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
-        attendanceItems.add(new AttendanceItem("23:59:59 - 31/12/2024", 12, 12));
+
 
         // Add more attendance items as needed
 
@@ -44,5 +39,16 @@ public class FragmentAttendance extends Fragment {
         listView.setAdapter(adapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getView() != null) {
+            LinearLayout memberAttendanceLayout = getView().findViewById(R.id.memberAttendance);
+            memberAttendanceLayout.setVisibility(View.GONE);
+            LinearLayout attendanceLayout = getView().findViewById(R.id.attendanceLayout);
+            attendanceLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+        }
     }
 }
