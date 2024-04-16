@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="10dp"
+    android:layout_marginVertical="5dp"
+    android:layout_marginHorizontal="5dp"
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
     app:cardCornerRadius="5dp"
@@ -19,18 +19,18 @@
         <TextView
             android:id="@+id/listTime"
             android:textAlignment="center"
-            android:layout_width="300dp"
+            android:layout_width="235dp"
             android:layout_height="30dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:text="23:59:59 - 31/12/2024"
             android:textSize="20sp" />
 
         <ImageView
             android:id="@+id/iconPresent"
-            android:layout_width="25dp"
+            android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="30dp"
             android:layout_marginTop="25dp"
             android:layout_toEndOf="@+id/listTime"
             android:src="@drawable/present" />
@@ -38,10 +38,10 @@
         <TextView
             android:id="@+id/name"
             android:textAlignment="center"
-            android:layout_width="300dp"
+            android:layout_width="235dp"
             android:layout_height="35dp"
             android:layout_below="@+id/listTime"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="4dp"
             android:text="Ngô Lê Huệ Ngân"
             android:textSize="25sp" />
