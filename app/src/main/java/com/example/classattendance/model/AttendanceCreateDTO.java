@@ -6,8 +6,8 @@ public class AttendanceCreateDTO {
     private int classId;
     private String location;
     private Date createTime;
-    private Date lateTime;
-    private Date expiryTime;
+    private int lateAfter;
+    private int expiryAfter;
 
     public int getClassId() {
         return classId;
@@ -33,19 +33,19 @@ public class AttendanceCreateDTO {
         this.createTime = createTime;
     }
 
-    public Date getLateTime() {
-        return lateTime;
+    public int getLateAfter() {
+        return lateAfter;
     }
 
-    public void setLateTime(Date lateTime) {
-        this.lateTime = lateTime;
+    public void setLateAfter(int lateAfter) {
+        this.lateAfter = lateAfter;
     }
 
-    public Date getExpiryTime() {
-        return expiryTime;
+    public int getExpiryAfter() {
+        return expiryAfter;
     }
 
-    public void setExpiryTime(Date expiryTime) {
-        this.expiryTime = expiryTime;
+    public void setExpiryAfter(int expiryAfter) {
+        this.expiryAfter = expiryAfter;
     }
 }
