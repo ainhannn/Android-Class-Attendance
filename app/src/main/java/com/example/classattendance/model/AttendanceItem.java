@@ -1,9 +1,13 @@
 package com.example.classattendance.model;
 
+import java.util.List;
+
 public class AttendanceItem {
     private String time;
     private int presentCount;
     private int lateCount;
+
+    public List<AttendanceStudent> attendaceStudent;
 
     public AttendanceItem(String time, int presentCount, int lateCount) {
         this.time = time;
