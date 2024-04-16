@@ -1,12 +1,17 @@
 package com.example.classattendance.fragment;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.TextView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import com.example.classattendance.R;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,6 +24,10 @@ public class CreateClassFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private TextInputEditText className, subject, section, room;
+
+    private MaterialButton createClass;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -60,5 +69,21 @@ public class CreateClassFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_class, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        className = view.findViewById(R.id.class_name_cre);
+        subject = view.findViewById(R.id.subject_cre);
+        section = view.findViewById(R.id.section_cre);
+        room = view.findViewById(R.id.room_cre);
+
+        createClass = view.findViewById(R.id.create_class_btn);
+
+        createClass.setOnClickListener(v -> {
+            //goi api tao class
+        });
     }
 }

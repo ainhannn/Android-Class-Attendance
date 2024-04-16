@@ -15,7 +15,22 @@ public class SimpleClass {
 
     public SimpleClass() {}
 
-    public SimpleClass(String name, String subject) {}
+    public SimpleClass(String name, String subject) {
+        this.name = name;
+        this.subject = subject;
+    }
+
+    public SimpleClass(int id, String code, Date time, int teacherId, String name, String section, String subject, String room, boolean isArchived) {
+        this.id = id;
+        this.code = code;
+        this.time = time;
+        this.teacherId = teacherId;
+        this.name = name;
+        this.section = section;
+        this.subject = subject;
+        this.room = room;
+        this.isArchived = isArchived;
+    }
 
     public int getId() {
         return id;
