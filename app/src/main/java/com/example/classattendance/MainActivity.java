@@ -1,5 +1,6 @@
 package com.example.classattendance;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import com.example.classattendance.databinding.ActivityMainBinding;
 import com.example.classattendance.fragment.CreateClassFragment;
 import com.example.classattendance.fragment.FirstFragment;
 import com.example.classattendance.fragment.JoinClassFragment;
+import com.example.classattendance.utils.MyAuth;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -29,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-//        setSupportActionBar(binding.toolbar);
 
         setSupportActionBar(binding.toolbar);
 
@@ -60,8 +60,10 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new FirstFragment();
             } else if (id == R.id.nav_setting) {
                 fragment = new FirstFragment();
-            } else if (id == R.id.nav_help) {
-                fragment = new FirstFragment();
+            } else if (id == R.id.nav_signout) {
+                MyAuth.signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
             if (fragment != null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, fragment).commit(); // Use the correct container ID

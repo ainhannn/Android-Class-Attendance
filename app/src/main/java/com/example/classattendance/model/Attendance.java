@@ -93,6 +93,6 @@ public class Attendance {
     }
 
     public AttendanceItem toAttendanceItem() {
-        return new AttendanceItem(time.toString(), presentCount, lateCount);
+        return new AttendanceItem(time.toString(), presentCount, lateCount, attendanceRecords);
     }
 }

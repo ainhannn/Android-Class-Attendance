@@ -11,20 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
-import com.example.classattendance.model.AttendanceStudent;
+import com.example.classattendance.model.AttendanceRecord;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class AttendanceStudentAdapter extends RecyclerView.Adapter<AttendanceStudentAdapter.AttendanceStudentViewHolder> {
 
-    private List<AttendanceStudent> attendanceStudentList;
+    private List<AttendanceRecord> attendanceStudentList;
     private Context context;
 
-    public AttendanceStudentAdapter(Context context, List<AttendanceStudent> attendanceStudentList) {
+    public AttendanceStudentAdapter(Context context, List<AttendanceRecord> attendanceStudentList) {
         this.context = context;
         this.attendanceStudentList = attendanceStudentList;
     }
@@ -38,20 +36,13 @@ public class AttendanceStudentAdapter extends RecyclerView.Adapter<AttendanceStu
 
     @Override
     public void onBindViewHolder(@NonNull AttendanceStudentViewHolder holder, int position) {
-        AttendanceStudent attendanceStudent = attendanceStudentList.get(position);
+        AttendanceRecord attendanceStudent = attendanceStudentList.get(position);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
-        Date date;
-        try {
-            date = sdf.parse(attendanceStudent.getTime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            date = new Date(); // Đối tượng Date mặc định nếu không thể chuyển đổi
-        }
 
         // Định dạng lại ngày thành chuỗi và hiển thị
-        holder.listTimeTextView.setText(sdf.format(date));
-        holder.nameTextView.setText(attendanceStudent.getName());
-        if (attendanceStudent.isPresent()) {
+        holder.listTimeTextView.setText(sdf.format(attendanceStudent.getTime()));
+        holder.nameTextView.setText(attendanceStudent.getUserName());
+        if (attendanceStudent.getStatus() == 1) {
             holder.iconPresentImageView.setImageResource(R.drawable.present);
         } else {
             holder.iconPresentImageView.setImageResource(R.drawable.late);

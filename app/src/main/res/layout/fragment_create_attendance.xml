@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.classitems.attendanceteacher.FragmentCreateAttendance">
+
+    <LinearLayout
+        android:layout_width="390dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- TODO: Update blank fragment layout -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_blank_fragment" />
+
+
+        <EditText
+            android:id="@+id/txt_time_expiry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Hieu luc" />
+
+        <EditText
+            android:id="@+id/txt_time_late"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Dung gio" />
+
+        <Button
+            android:id="@+id/btn_create_code"
+            android:layout_width="401dp"
+            android:layout_height="wrap_content"
+            android:text="Button" />
+    </LinearLayout>
+
+</FrameLayout>

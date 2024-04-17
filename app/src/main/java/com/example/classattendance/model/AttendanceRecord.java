@@ -1,6 +1,8 @@
 package com.example.classattendance.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AttendanceRecord {
     private int attendanceId;
@@ -59,7 +61,9 @@ public class AttendanceRecord {
         this.userName = userName;
     }
 
-    public AttendanceStudent toAttendanceStudent() {
-        return new AttendanceStudent(time.toString(), userName, status == 1);
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
+        return "Name: " + userName + ", Attendance Time: " + sdf.format(time) + ", Present: " + String.valueOf(status == 1);
     }
 }
