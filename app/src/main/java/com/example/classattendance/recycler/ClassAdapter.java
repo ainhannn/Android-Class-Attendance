@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.classattendance.R;
 import com.example.classattendance.model.SimpleClass;
+import com.example.classattendance.utils.MyAuth;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,7 +34,6 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
         this.listener = listener;
         this.longClickListener = longClickListener;
     }
-
 
     @NonNull
     @NotNull
@@ -71,7 +72,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
             Log.e("err", "bind: class"+ classroom.getName() + " " + classroom.getSubject());
             className.setText(classroom.getName());
             classSub.setText(classroom.getSubject());
-            classStatus.setText("Joined");
+            try {
+                if (classroom.getTeacherId() == MyAuth.getModelUser().getId())
+                    classStatus.setText("Created");
+                else
+                    classStatus.setText("Joined");
+            } catch (Exception ex) {
+                classStatus.setText("Joined");
+            }
             // Set click listener
             itemView.setOnClickListener(view -> {
                 if (listener != null) {

@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class MyAuth {
+    private static final String UID_DEFAULT = "hMnuzMB8SdMPHxaYMD8ooQHcrXB2";
+
     private static User modelUser = null;
 
     public static FirebaseAuth self() {
@@ -26,5 +28,9 @@ public class MyAuth {
 
     public static void setModelUser(User user) {
         modelUser = user;
+    }
+
+    public static String getUid() {
+        return modelUser != null ? modelUser.getUid() : UID_DEFAULT;
     }
 }

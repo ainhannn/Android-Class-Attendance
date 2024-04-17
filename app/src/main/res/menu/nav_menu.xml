@@ -10,46 +10,30 @@
             android:padding="10dp" />
 
         <item
-            android:id="@+id/nav_calendar"
+            android:id="@+id/nav_created_classes"
+            android:title="Lớp học đã tạo"
+            android:icon="@drawable/lop_hoc"
+            android:padding="10dp" />
+
+        <item
+            android:id="@+id/nav_joined_classes"
+            android:title="Lớp học đã tham gia"
+            android:icon="@drawable/lop_hoc"
+            android:padding="10dp" />
+
+        <item
+            android:id="@+id/nav_notification"
             android:title="Bảng tin"
             android:icon="@drawable/calendar"
             android:padding="10dp" />
 
+        <item
+            android:id="@+id/nav_attendance"
+            android:title="Tổng hợp điểm danh"
+            android:icon="@drawable/folder"
+            android:padding="10dp" />
+
     </group>
-
-    <item android:title="ĐÃ ĐĂNG KÝ">
-
-        <menu>
-
-            <group android:checkableBehavior="single">
-
-                <item
-                    android:id="@+id/nav_Class1"
-                    android:title="Class 1"
-                    android:icon="@drawable/book"
-
-                    android:padding="10dp" />
-
-                <item
-                    android:id="@+id/nav_Class2"
-                    android:title="Class 2"
-                    android:icon="@drawable/book"
-
-                    android:padding="10dp" />
-
-                <item
-                    android:id="@+id/nav_Class3"
-                    android:title="Class 3"
-                    android:icon="@drawable/book"
-
-                    android:padding="10dp" />
-
-
-            </group>
-
-        </menu>
-
-    </item>
 
     <item android:title="">
 
@@ -61,18 +45,6 @@
                     android:id="@+id/nav_class_passed"
                     android:title="Lớp học đã lưu trữ"
                     android:icon="@drawable/archive"
-                    android:padding="10dp" />
-
-                <item
-                    android:id="@+id/nav_folder"
-                    android:title="Thư mục của lớp học"
-                    android:icon="@drawable/folder"
-                    android:padding="10dp" />
-
-                <item
-                    android:id="@+id/nav_setting"
-                    android:title="Cài đặt"
-                    android:icon="@drawable/setting"
                     android:padding="10dp" />
 
                 <item

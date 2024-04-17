@@ -1,29 +1,19 @@
 package com.example.classattendance.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 import java.util.List;
 
 public class Class {
-    @SerializedName("Id")
     private int id;
-    @SerializedName("Time")
+    private String code;
     private Date time;
-    @SerializedName("Name")
     private String name;
-    @SerializedName("Section")
     private String section;
-    @SerializedName("Subject")
     private String subject;
-    @SerializedName("Room")
     private String room;
-    @SerializedName("Teacher")
     private SimpleUser teacher;
-    @SerializedName("Notifications")
-    public List<Notification> notifications;
-    @SerializedName("Members")
-    public List<SimpleUser> members;
+    private List<Notification> notifications;
+    private List<SimpleUser> members;
 
     public Class() {
     }
@@ -34,6 +24,14 @@ public class Class {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Date getTime() {

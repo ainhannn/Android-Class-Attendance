@@ -1,9 +1,10 @@
 package com.example.classattendance;
 
-import android.content.Context;
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -12,6 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.classattendance.api.NetworkUtil;
+import com.example.classattendance.api.UserAPI;
+import com.example.classattendance.model.User;
+import com.example.classattendance.utils.MyAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -21,14 +26,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
     Button googleAuth;
-    FirebaseAuth auth;
     GoogleSignInClient mGoogleSignInClient;
 
     int RC_SIGN_IN = 20;
@@ -39,8 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         googleAuth = findViewById(R.id.btnBatdau);
-
-        auth = FirebaseAuth.getInstance();
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -62,9 +66,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and switch activity.
-        FirebaseUser currentUser = auth.getCurrentUser();
-        if (currentUser != null) {
-            switchActivity(currentUser);
+        if (MyAuth.getCurrentUser() != null) {
+            switchActivity();
         }
     }
 
@@ -85,16 +88,15 @@ public class LoginActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String idToken){
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        auth.signInWithCredential(credential)
+        MyAuth.self().signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser currentUser = auth.getCurrentUser();
                             Toast.makeText(LoginActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
-
-                            switchActivity(currentUser);
+                            setModelUserAfterLogin();
+                            switchActivity();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
@@ -103,15 +105,29 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void switchActivity(FirebaseUser currentUser) {
-        SharedPreferences sharedPreferences = getSharedPreferences("CurrentUser", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("uid", currentUser.getUid());
-        editor.putString("name", currentUser.getDisplayName());
-        editor.putString("avatar", currentUser.getPhotoUrl().toString());
-        editor.apply();
-
+    private void switchActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void setModelUserAfterLogin() {
+        UserAPI userAPI = NetworkUtil.self().getRetrofit().create(UserAPI.class);
+        Call<User> call = userAPI.login(MyAuth.getModelUser().getUid());
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    MyAuth.setModelUser(response.body());
+                    Log.e(TAG, "onResponse: successful");
+                } else {
+                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 }
