@@ -21,6 +21,12 @@ public class Notification {
         this.content = content;
     }
 
+    public Notification(Date time, String username, String content) {
+        this.time = time;
+        this.username = username;
+        this.content = content;
+    }
+
     public int getId() {
         return id;
     }
