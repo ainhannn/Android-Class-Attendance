@@ -7,12 +7,13 @@ public class AttendanceItem {
     private int presentCount;
     private int lateCount;
 
-    public List<AttendanceStudent> attendaceStudent;
+    public List<AttendanceStudent> attendanceStudentList;
 
-    public AttendanceItem(String time, int presentCount, int lateCount) {
+    public AttendanceItem(String time, int presentCount, int lateCount, List<AttendanceStudent> attendanceStudentList) {
         this.time = time;
         this.presentCount = presentCount;
         this.lateCount = lateCount;
+        this.attendanceStudentList = attendanceStudentList;
     }
 
     public String getTime() {
@@ -37,5 +38,13 @@ public class AttendanceItem {
 
     public void setLateCount(int lateCount) {
         this.lateCount = lateCount;
+    }
+
+    public List<AttendanceStudent> getAttendanceStudentList() {
+        return attendanceStudentList;
+    }
+
+    public void setAttendanceStudent(List<AttendanceStudent> attendanceStudent) {
+        this.attendanceStudentList = attendanceStudent;
     }
 }

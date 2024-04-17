@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginVertical="10dp"
+    android:layout_marginHorizontal="5dp"
+    android:layout_marginVertical="5dp"
     android:layout_marginStart="12dp"
     android:layout_marginEnd="12dp"
     app:cardCornerRadius="20dp"
@@ -28,6 +28,7 @@
                 android:id="@+id/listIndex"
                 android:layout_width="30dp"
                 android:layout_height="35dp"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="25dp"
                 android:layout_marginBottom="25dp"
@@ -39,7 +40,7 @@
                 android:id="@+id/listTime"
                 android:layout_width="210dp"
                 android:layout_height="30dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/listIndex"
                 android:text="23:59:59 - 31/12/2024"
@@ -47,10 +48,10 @@
 
             <ImageView
                 android:id="@+id/iconPresent"
-                android:layout_width="25dp"
+                android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_below="@+id/listTime"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="25dp"
                 android:layout_marginTop="4dp"
                 android:layout_toEndOf="@+id/listIndex"
                 android:src="@drawable/present" />
@@ -90,8 +91,9 @@
                 android:id="@+id/iconQR"
                 android:layout_width="45dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="30dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="18dp"
+                android:layout_marginEnd="21dp"
                 android:layout_toEndOf="@+id/listTime"
                 android:src="@drawable/qrcode" />
 
@@ -104,12 +106,13 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <ListView
-                android:id="@+id/listStudentView"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewStudents"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="1.0sp"
+                android:dividerHeight="0.5sp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"

@@ -1,20 +1,25 @@
 package com.example.classattendance.model;
 
-import android.annotation.SuppressLint;
-
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Locale;
 
 public class AttendanceStudent {
-    private Date time;
+    private String time;
     private String name;
-    private Boolean present;
+    private boolean present;
 
-    public AttendanceStudent(String time, String name, Boolean present) {
-        this.time = formatDate(time);
+    public AttendanceStudent(String time, String name, boolean present) {
+        this.time = time;
         this.name = name;
         this.present = present;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getName() {
@@ -25,30 +30,17 @@ public class AttendanceStudent {
         this.name = name;
     }
 
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
-    }
-
-    public Boolean isPresent() {
+    public boolean isPresent() {
         return present;
     }
 
-    public void setPresent(Boolean present) {
+    public void setPresent(boolean present) {
         this.present = present;
     }
 
-    private Date formatDate(String timeString) {
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy");
-        try {
-            return sdf.parse(timeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @Override
+    public String toString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
+        return "Name: " + name + ", Attendance Time: " + sdf.format(time) + ", Present: " + present;
     }
 }
