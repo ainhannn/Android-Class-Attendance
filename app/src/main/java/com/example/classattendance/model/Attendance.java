@@ -89,8 +89,4 @@ public class Attendance {
     public void setLateCount(int lateCount) {
         this.lateCount = lateCount;
     }
-
-    public AttendanceItem toAttendanceItem() {
-        return new AttendanceItem(time.toString(), presentCount, lateCount, attendanceRecords);
-    }
 }

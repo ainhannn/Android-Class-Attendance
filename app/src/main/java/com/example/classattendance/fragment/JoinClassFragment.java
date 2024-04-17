@@ -82,6 +82,7 @@ public class JoinClassFragment extends Fragment {
                     // Chuyển đến lớp vừa tạo
                     Intent intent = new Intent(getContext(), ClassActivity.class);
                     intent.putExtra("class_id", model.getId());
+                    intent.putExtra("role", "student");
                     startActivity(intent);
                 }
 

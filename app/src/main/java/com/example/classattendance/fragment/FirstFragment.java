@@ -94,6 +94,14 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     public void onItemClick(SimpleClass classroom) {
         Intent intent = new Intent(getContext(), ClassActivity.class);
         intent.putExtra("class_id", classroom.getId());
+        try {
+            if (classroom.getTeacherId() == MyAuth.getModelUser().getId())
+                intent.putExtra("role", "teacher");
+            else
+                intent.putExtra("role", "student");
+        } catch (Exception e) {
+            intent.putExtra("role", "teacher");
+        }
         startActivity(intent);
     }
 

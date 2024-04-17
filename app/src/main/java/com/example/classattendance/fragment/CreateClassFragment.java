@@ -93,6 +93,7 @@ public class CreateClassFragment extends Fragment {
 
                         // Chuyển đến lớp vừa tạo
                         Intent intent = new Intent(getContext(), ClassActivity.class);
+                        intent.putExtra("role", "teacher");
                         intent.putExtra("class_id", model.getId());
                         startActivity(intent);
                     }

@@ -5,6 +5,8 @@ import com.example.classattendance.model.AttendanceCreateDTO;
 import com.example.classattendance.model.AttendanceRecord;
 import com.example.classattendance.model.AttendanceTakeDTO;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -24,15 +26,15 @@ public interface AttendanceAPI {
 
 
     @GET("attendance/{classId}/teacher")
-    Call<Attendance> getAttendanceRoleTeacher(@Query("UID") String uid,
-                                              @Path("classId") String classId);
+    Call<List<Attendance>> getAttendanceRoleTeacher(@Path("classId") int classId,
+                                                    @Query("UID") String uid);
 
     @GET("attendance/{classId}/student")
-    Call<AttendanceRecord> getAttendanceRoleStudent(@Query("UID") String uid,
-                                                    @Path("classId") String classId);
+    Call<List<AttendanceRecord>> getAttendanceRoleStudent(@Path("classId") int classId,
+                                                          @Query("UID") String uid);
 
     @DELETE("attendance/{attendanceId}/delete")
-    Call<Void> deleteAttendance(@Query("UID") String uid,
-                                @Path("attendanceId") String attendanceId);
+    Call<Void> deleteAttendance(@Path("attendanceId") String attendanceId,
+                                @Query("UID") String uid);
 
 }

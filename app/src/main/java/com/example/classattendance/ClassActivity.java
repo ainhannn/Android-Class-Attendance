@@ -22,7 +22,8 @@ public class ClassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_class);
 
         // Get data from intent extras
-        String classId = getIntent().getStringExtra("class_id");
+        int classId = getIntent().getIntExtra("class_id", 0);
+        String role = getIntent().getStringExtra("role");
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
