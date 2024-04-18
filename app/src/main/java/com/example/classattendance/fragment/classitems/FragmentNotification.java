@@ -20,9 +20,6 @@ import java.util.Date;
 import java.util.List;
 
 public class FragmentNotification extends Fragment {
-    private RecyclerView recyclerView;
-    private NotificationAdapter notificationAdapter;
-    private List<Notification> notificationList;
 
     private static final String ARG_CLASS_NAME = "className";
     private static final String ARG_CLASS_SUBJECT = "classSubject";
@@ -65,11 +62,11 @@ public class FragmentNotification extends Fragment {
         classNameTextView.setText(className);
         classSubTextView.setText(classSubject);
 
-        recyclerView = view.findViewById(R.id.recyclerViewNotification);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewNotification);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        notificationList = new ArrayList<>();
-        notificationAdapter = new NotificationAdapter(notificationList, getContext());
+        List<Notification> notificationList = new ArrayList<>();
+        NotificationAdapter notificationAdapter = new NotificationAdapter(notificationList, getContext());
         recyclerView.setAdapter(notificationAdapter);
 
         notificationList.add(new Notification(new Date(), "Ngô Lê Huệ Ngân", "Đây là thông báo mẫu ahihi"));

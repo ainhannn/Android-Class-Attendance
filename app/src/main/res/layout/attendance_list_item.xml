@@ -110,6 +110,7 @@
                 android:id="@+id/recyclerViewStudents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="0.5sp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

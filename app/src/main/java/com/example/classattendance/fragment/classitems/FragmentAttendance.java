@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -93,14 +94,25 @@ public class FragmentAttendance extends Fragment {
 //        });
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onResume() {
         super.onResume();
         if (getView() != null) {
-            LinearLayout memberAttendanceLayout = getView().findViewById(R.id.memberAttendance);
-            memberAttendanceLayout.setVisibility(View.GONE);
-            LinearLayout attendanceLayout = getView().findViewById(R.id.attendanceLayout);
-            attendanceLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+            RecyclerView recyclerView = getView().findViewById(R.id.recyclerViewAttendance);
+            AttendanceAdapter adapter = (AttendanceAdapter) recyclerView.getAdapter();
+            if (adapter != null) {
+                for (int i = 0; i < createItemList().size(); i++) {
+                    AttendanceAdapter.AttendanceViewHolder holder = (AttendanceAdapter.AttendanceViewHolder) recyclerView.findViewHolderForAdapterPosition(i);
+                    if (holder != null) {
+                        LinearLayout memberAttendanceLayout = holder.itemView.findViewById(R.id.memberAttendance);
+                        memberAttendanceLayout.setVisibility(View.GONE);
+                        RelativeLayout attendanceLayout = holder.itemView.findViewById(R.id.attendanceClicked);
+                        attendanceLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 }
