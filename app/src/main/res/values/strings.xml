@@ -70,4 +70,5 @@
     <string name="notification">Bảng tin</string>
     <string name="attendance">Điểm danh</string>
     <string name="people">Mọi người</string>
+    <string name="notification_edit_text_viewholder">Thông báo nội dung nào đó cho lớp học của bạn</string>
 </resources>
