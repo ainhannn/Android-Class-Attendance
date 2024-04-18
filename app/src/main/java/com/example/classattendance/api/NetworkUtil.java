@@ -9,7 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class NetworkUtil {
-    private static final String ipAddress = "192.168.1.7"; // change here
+    private static final String ipAddress = "192.168.1.4"; // change here
     private static final String baseUrl = "http://" + ipAddress + ":5280/api/";
     private static volatile NetworkUtil mInstance = null;
     private Retrofit retrofit;

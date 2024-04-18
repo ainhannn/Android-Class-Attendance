@@ -30,7 +30,7 @@ public class ClassActivity extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager);
 
-        FragmentNotification fragmentNotification = FragmentNotification.newInstance(className, classSubject);
+        FragmentNotification fragmentNotification = FragmentNotification.newInstance("","");
 
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(fragmentNotification, getString(R.string.notification));

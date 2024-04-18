@@ -86,8 +86,31 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
         binding.fab.setOnClickListener(v -> {
             bottomSheetDialog.show();
         });
+    }
 
-        loadData();
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        UserAPI userAPI = NetworkUtil.self().getRetrofit().create(UserAPI.class);
+        Call<User> call = userAPI.login(MyAuth.getUid());
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    MyAuth.setModelUser(response.body());
+                    data.clear();
+                    data.addAll(MyAuth.getModelUser().getCreatedClasses());
+                    data.addAll(MyAuth.getModelUser().getJoinedClasses());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 
     @Override
@@ -109,36 +132,6 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    private void loadData() {
-        User user = MyAuth.getModelUser();
-        if (user != null) {
-            data.clear();
-            data.addAll(user.getCreatedClasses());
-            data.addAll(user.getJoinedClasses());
-            adapter.notifyDataSetChanged();
-        } else {
-            UserAPI userAPI = NetworkUtil.self().getRetrofit().create(UserAPI.class);
-            Call<User> call = userAPI.login(MyAuth.getUid());
-            call.enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(Call<User> call, Response<User> response) {
-                    if (response.isSuccessful()) {
-                        MyAuth.setModelUser(response.body());
-                        data.clear();
-                        data.addAll(MyAuth.getModelUser().getCreatedClasses());
-                        data.addAll(MyAuth.getModelUser().getJoinedClasses());
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<User> call, Throwable t) {
-                    Log.e(TAG, "onFailure: " + t.getMessage());
-                }
-            });
-        }
     }
 
     @Override

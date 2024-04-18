@@ -22,23 +22,23 @@ public interface ClassAPI {
                           @Query("classCode") String classCode);
 
     @GET("class/{classId}")
-    Call<Class> getClassById(@Path("classId") String classId);
+    Call<Class> getClassById(@Path("classId") int classId);
 
     @PUT("class/{classId}/update")
-    Call<Void> updateClass(@Path("classId") String classId,
+    Call<Void> updateClass(@Path("classId") int classId,
                            @Body ClassDTO classDTO);
 
     @PUT("class/{classId}/archive")
-    Call<Void> archiveClass(@Path("classId") String classId);
+    Call<Void> archiveClass(@Path("classId") int classId);
 
     @PUT("class/{classId}/restore")
-    Call<Void> restoreClass(@Path("classId") String classId);
+    Call<Void> restoreClass(@Path("classId") int classId);
 
     @DELETE("class/{classId}/delete")
-    Call<Void> deleteClass(@Path("classId") String classId);
+    Call<Void> deleteClass(@Path("classId") int classId);
 
     @DELETE("class/{classId}/out")
-    Call<Void> outClass(@Path("userId") String userId,
-                        @Path("classId") String classId);
+    Call<Void> outClass(@Path("classId") int classId,
+                        @Query("userId") int userId);
 
 }
