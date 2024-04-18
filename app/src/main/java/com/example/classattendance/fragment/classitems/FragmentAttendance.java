@@ -1,7 +1,10 @@
 package com.example.classattendance.fragment.classitems;
 
+import static android.content.ContentValues.TAG;
+
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,49 +15,82 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
-import com.example.classattendance.model.AttendanceItem;
-import com.example.classattendance.model.AttendanceStudent;
+import com.example.classattendance.api.AttendanceAPI;
+import com.example.classattendance.api.NetworkUtil;
+import com.example.classattendance.model.Attendance;
 import com.example.classattendance.recycler.AttendanceAdapter;
+import com.example.classattendance.utils.MyAuth;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FragmentAttendance extends Fragment {
     private RecyclerView recyclerView;
     private AttendanceAdapter adapter;
-    private List<AttendanceItem> itemList;
+    private List<Attendance> data = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attendance, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewAttendance);
-        itemList = createItemList();
-        adapter = new AttendanceAdapter(getContext(), itemList);
+        adapter = new AttendanceAdapter(getContext(), data);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         return view;
     }
 
-    private List<AttendanceItem> createItemList() {
-        // Create your list of items here
-        List<AttendanceItem> itemList = new ArrayList<>();
-        // Add items to the list
-        List<AttendanceStudent> studentList1 = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
-        studentList1.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", true));
-        studentList1.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", false));
-        studentList1.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", true));
+    @Override
+    public void onStart() {
+        super.onStart();
 
-        List<AttendanceStudent> studentList2 = new ArrayList<>();
-        studentList2.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", true));
-        studentList2.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", true));
-        studentList2.add(new AttendanceStudent("23:59:59 12/12/2024", "Ngô Lê Huệ Ngân", true));
+        if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
+            roleTeacher();
+        else
+            roleStudent();
+    }
 
-        itemList.add(new AttendanceItem("23:59:59 12/12/2024", 12, 12, studentList1));
-        itemList.add(new AttendanceItem("23:59:59 12/12/2024", 12, 13, studentList2));
-        return itemList;
+    private void roleTeacher() {
+        AttendanceAPI api = NetworkUtil.self().getRetrofit().create(AttendanceAPI.class);
+        Call<List<Attendance>> call = api.getAttendanceRoleTeacher(
+                getActivity().getIntent().getIntExtra("class_id", 0),
+                MyAuth.getUid());
+        call.enqueue(new Callback<List<Attendance>>() {
+            @Override
+            public void onResponse(Call<List<Attendance>> call, Response<List<Attendance>> response) {
+                if (response.isSuccessful()) {
+                    data.clear();
+                    data.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Attendance>> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+    }
+
+    private void roleStudent() {
+//        AttendanceAPI api = NetworkUtil.self().getRetrofit().create(AttendanceAPI.class);
+//        Call<List<Attendance>> call = api.getAttendanceRoleTeacher(MyAuth.getUid(), getActivity().getIntent().getIntExtra("class_id", 0));
+//        call.enqueue(new Callback<List<Attendance>>() {
+//            @Override
+//            public void onResponse(Call<List<Attendance>> call, Response<List<Attendance>> response) {
+//                if (response.isSuccessful()) {
+//                    data.clear();
+//                    data.addAll(response.body());
+//                    adapter.notifyDataSetChanged();
+//                }
+//            }
+//            @Override
+//            public void onFailure(Call<List<Attendance>> call, Throwable t) {
+//                Log.e(TAG, "onFailure: " + t.getMessage());
+//            }
+//        });
     }
 
     @Override

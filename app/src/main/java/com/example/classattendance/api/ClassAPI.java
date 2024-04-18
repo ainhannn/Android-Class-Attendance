@@ -1,5 +1,6 @@
 package com.example.classattendance.api;
 
+import com.example.classattendance.model.Class;
 import com.example.classattendance.model.ClassDTO;
 
 import retrofit2.Call;

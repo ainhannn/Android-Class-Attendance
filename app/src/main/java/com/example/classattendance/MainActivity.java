@@ -1,17 +1,26 @@
 package com.example.classattendance;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.example.classattendance.databinding.ActivityMainBinding;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.example.classattendance.fragment.CreateClassFragment;
+import com.example.classattendance.fragment.FirstFragment;
+import com.example.classattendance.fragment.JoinClassFragment;
+import com.example.classattendance.fragment.classitems.FragmentAttendance;
+import com.example.classattendance.fragment.classitems.FragmentNotification;
+import com.example.classattendance.utils.MyAuth;
+import com.google.android.material.navigation.NavigationView;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,12 +36,45 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
+        DrawerLayout drawer = binding.drawerLayout;
+        NavigationView navigationView = binding.navView;
+
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        appBarConfiguration =
+                new AppBarConfiguration
+                        .Builder(navController.getGraph())
+                        .setOpenableLayout(drawer)
+                        .build();
+
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
 
-
-
+        navigationView.setNavigationItemSelectedListener(item -> {
+            Fragment fragment = null;
+            int id = item.getItemId();
+            if (id == R.id.nav_school) {
+                fragment = new FirstFragment();
+            } else if (id == R.id.nav_created_classes) {
+                fragment = new CreateClassFragment();
+            } else if (id == R.id.nav_joined_classes) {
+                fragment = new JoinClassFragment();
+            } else if (id == R.id.nav_notification) {
+                fragment = new FragmentNotification();
+            } else if (id == R.id.nav_attendance) {
+                fragment = new FragmentAttendance();
+            } else if (id == R.id.nav_class_passed) {
+                fragment = new FirstFragment();
+            } else if (id == R.id.nav_signout) {
+                MyAuth.signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+            if (fragment != null) {
+                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, fragment).commit(); // Use the correct container ID
+            }
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        });
     }
 
     @Override

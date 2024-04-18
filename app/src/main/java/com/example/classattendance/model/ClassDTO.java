@@ -1,15 +1,9 @@
 package com.example.classattendance.model;
 
-import com.google.gson.annotations.SerializedName;
-
 public class ClassDTO {
-    @SerializedName("Name")
     private String name;
-    @SerializedName("Section")
     private String section;
-    @SerializedName("Subject")
     private String subject;
-    @SerializedName("Room")
     private String room;
 
     public ClassDTO() {}

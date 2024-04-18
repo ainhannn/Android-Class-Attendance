@@ -18,18 +18,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
-import com.example.classattendance.model.AttendanceItem;
+import com.example.classattendance.model.Attendance;
 
 import java.util.List;
 
 public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.AttendanceViewHolder> {
 
-    private List<AttendanceItem> attendanceItemList;
+    private List<Attendance> attendanceList;
     private Context context;
 
-    public AttendanceAdapter(Context context, List<AttendanceItem> attendanceItemList) {
+    public AttendanceAdapter(Context context, List<Attendance> attendanceList) {
         this.context = context;
-        this.attendanceItemList = attendanceItemList;
+        this.attendanceList = attendanceList;
     }
 
     @NonNull
@@ -41,19 +41,19 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 
     @Override
     public void onBindViewHolder(@NonNull AttendanceViewHolder holder, int position) {
-        AttendanceItem attendanceItem = attendanceItemList.get(position);
-        holder.timeTextView.setText(attendanceItem.getTime());
-        holder.presentCountTextView.setText(String.valueOf(attendanceItem.getPresentCount()));
-        holder.lateCountTextView.setText(String.valueOf(attendanceItem.getLateCount()));
+        Attendance attendance = attendanceList.get(position);
+        holder.timeTextView.setText(String.valueOf(attendance.getTime()));
+        holder.presentCountTextView.setText(String.valueOf(attendance.getPresentCount()));
+        holder.lateCountTextView.setText(String.valueOf(attendance.getLateCount()));
 
         // Set up the RecyclerView for attendance students
-        AttendanceStudentAdapter adapter = new AttendanceStudentAdapter(context, attendanceItem.getAttendanceStudentList());
+        AttendanceStudentAdapter adapter = new AttendanceStudentAdapter(context, attendance.getAttendanceRecords());
         holder.recyclerView.setAdapter(adapter);
     }
 
     @Override
     public int getItemCount() {
-        return attendanceItemList.size();
+        return attendanceList.size();
     }
 
     public class AttendanceViewHolder extends RecyclerView.ViewHolder {
