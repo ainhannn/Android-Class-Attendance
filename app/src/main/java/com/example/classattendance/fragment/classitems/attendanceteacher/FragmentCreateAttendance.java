@@ -93,7 +93,7 @@ public class FragmentCreateAttendance extends Fragment {
                             // Code here
                             AttendanceCreateDTO dto = new AttendanceCreateDTO();
                             dto.setCreateTime(new Date());
-                            dto.setLocation(String.valueOf(latitude) + "," + String.valueOf(longitude));
+                            dto.setLocation(latitude + "," + longitude);
                             dto.setExpiryAfter(Integer.valueOf(strExpiry));
                             dto.setLateAfter(Integer.valueOf(strLate));
                             dto.setClassId(1);

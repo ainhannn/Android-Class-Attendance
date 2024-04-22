@@ -64,6 +64,6 @@ public class AttendanceRecord {
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss - dd/MM/yyyy", Locale.getDefault());
-        return "Name: " + userName + ", Attendance Time: " + sdf.format(time) + ", Present: " + String.valueOf(status == 1);
+        return "Name: " + userName + ", Attendance Time: " + sdf.format(time) + ", Present: " + (status == 1);
     }
 }

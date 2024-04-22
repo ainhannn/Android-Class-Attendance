@@ -2,9 +2,11 @@ package com.example.classattendance.recycler;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.transition.AutoTransition;
 import android.transition.TransitionManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
 import com.example.classattendance.model.Attendance;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 import java.util.List;
 
@@ -45,6 +51,13 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         holder.timeTextView.setText(String.valueOf(attendance.getTime()));
         holder.presentCountTextView.setText(String.valueOf(attendance.getPresentCount()));
         holder.lateCountTextView.setText(String.valueOf(attendance.getLateCount()));
+
+        if (attendance.getCode().isEmpty()) {
+            holder.iconQR.setVisibility(View.GONE);
+        } else {
+            holder.iconQR.setVisibility(View.VISIBLE);
+            holder.iconQR.setTooltipText(attendance.getCode());
+        }
 
         // Set up the RecyclerView for attendance students
         AttendanceStudentAdapter adapter = new AttendanceStudentAdapter(context, attendance.getAttendanceRecords());
@@ -76,14 +89,29 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
             attendanceLayout = itemView.findViewById(R.id.attendanceClicked);
             memberAttendanceLayout = itemView.findViewById(R.id.memberAttendance);
 
-            iconQR.setOnClickListener(v -> {
-                View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
-                ImageView dialogIcon = dialogView.findViewById(R.id.dialog_icon);
-                dialogIcon.setImageResource(R.drawable.qrcode);
+            if (!String.valueOf(iconQR.getTooltipText()).isEmpty()) {
+                iconQR.setOnClickListener(v -> {
+                    View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_custom, null);
+                    String qrCodeStr = String.valueOf(iconQR.getTooltipText());
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("QUÉT MÃ").setView(dialogView).create().show();
-            });
+                    // Generate QR code and set it to ImageView
+                    ImageView dialogIcon = dialogView.findViewById(R.id.dialog_icon);
+                    try {
+                        Bitmap bitmap = encodeAsBitmap(qrCodeStr);
+                        dialogIcon.setImageBitmap(bitmap);
+                    } catch (WriterException e) {
+                        Log.e("QR Code Error", e.getMessage());
+                    }
+
+                    // Set QR code to TextView
+                    TextView qrCodeTxt = dialogView.findViewById(R.id.qrCode);
+                    qrCodeTxt.setText(qrCodeStr);
+
+                    // Create Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setTitle("QUÉT MÃ").setView(dialogView).create().show();
+                });
+            }
 
             attendanceLayout.setOnClickListener(v -> {
                 if (memberAttendanceLayout.getVisibility() == View.GONE) {
@@ -96,6 +124,30 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
                     attendanceLayout.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
             });
+        }
+
+        private Bitmap encodeAsBitmap(String str) throws WriterException {
+            BitMatrix result;
+            try {
+                result = new MultiFormatWriter().encode(str,
+                        BarcodeFormat.QR_CODE, 500, 500, null);
+            } catch (IllegalArgumentException iae) {
+                // Unsupported format
+                return null;
+            }
+            int w = result.getWidth();
+            int h = result.getHeight();
+            int[] pixels = new int[w * h];
+            for (int y = 0; y < h; y++) {
+                int offset = y * w;
+                for (int x = 0; x < w; x++) {
+                    pixels[offset + x] = result.get(x, y) ? 0xFF000000 : 0xFFFFFFFF;
+                }
+            }
+
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+            bitmap.setPixels(pixels, 0, 500, 0, 0, w, h);
+            return bitmap;
         }
     }
 }
