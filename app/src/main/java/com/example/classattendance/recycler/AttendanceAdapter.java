@@ -52,7 +52,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
         holder.presentCountTextView.setText(String.valueOf(attendance.getPresentCount()));
         holder.lateCountTextView.setText(String.valueOf(attendance.getLateCount()));
 
-        if (attendance.getCode().isEmpty()) {
+        if (attendance.getCode() == null || attendance.getCode().isEmpty()) {
             holder.iconQR.setVisibility(View.GONE);
         } else {
             holder.iconQR.setVisibility(View.VISIBLE);
