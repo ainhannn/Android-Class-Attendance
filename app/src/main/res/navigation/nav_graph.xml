@@ -15,8 +15,8 @@
             android:id="@+id/action_FirstFragment_to_createClassFragment"
             app:destination="@id/createClassFragment" />
         <action
-            android:id="@+id/action_FirstFragment_to_joinClassFragment2"
-            app:destination="@id/joinClassFragment2" />
+            android:id="@+id/action_FirstFragment_to_joinClassFragment"
+            app:destination="@id/joinClassFragment" />
     </fragment>
     <fragment
         android:id="@+id/createClassFragment"
@@ -24,7 +24,7 @@
         android:label="fragment_create_class"
         tools:layout="@layout/fragment_create_class" />
     <fragment
-        android:id="@+id/joinClassFragment2"
+        android:id="@+id/joinClassFragment"
         android:name="com.example.classattendance.fragment.JoinClassFragment"
         android:label="JoinClassFragment" />
 </navigation>

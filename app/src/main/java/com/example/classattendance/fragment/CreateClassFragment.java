@@ -88,7 +88,6 @@ public class CreateClassFragment extends Fragment {
                         // Mở FirstFragment
                         fragmentManager.beginTransaction()
                                 .replace(R.id.nav_host_fragment_content_main, new FirstFragment())
-                                .addToBackStack(null) // Để có thể quay lại fragment trước đó nếu cần
                                 .commit();
 
                         // Chuyển đến lớp vừa tạo
