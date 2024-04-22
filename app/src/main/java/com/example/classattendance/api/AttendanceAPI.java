@@ -30,7 +30,7 @@ public interface AttendanceAPI {
                                                     @Query("UID") String uid);
 
     @GET("attendance/{classId}/student")
-    Call<List<AttendanceRecord>> getAttendanceRoleStudent(@Path("classId") int classId,
+    Call<List<Attendance>> getAttendanceRoleStudent(@Path("classId") int classId,
                                                           @Query("UID") String uid);
 
     @DELETE("attendance/{attendanceId}/delete")

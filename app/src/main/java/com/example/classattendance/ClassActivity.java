@@ -1,10 +1,9 @@
 package com.example.classattendance;
 
-import static androidx.fragment.app.FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
-
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.classattendance.fragment.classitems.FragmentAttendance;
@@ -29,10 +28,8 @@ public class ClassActivity extends AppCompatActivity {
 
         tabLayout.setupWithViewPager(viewPager);
 
-        FragmentNotification fragmentNotification = FragmentNotification.newInstance("","");
-
-        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(fragmentNotification, getString(R.string.notification));
+        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        vpAdapter.addFragment(new FragmentNotification(), getString(R.string.notification));
         vpAdapter.addFragment(new FragmentAttendance(), getString(R.string.attendance));
         vpAdapter.addFragment(new FragmentPeople(), getString(R.string.people));
         viewPager.setAdapter(vpAdapter);
