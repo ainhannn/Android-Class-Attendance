@@ -58,7 +58,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         public void bind(Notification notification) {
-            textViewUsername.setText(notification.getUsername());
+            textViewUsername.setText(notification.getUserName());
             textViewTime.setText(formatTime(notification.getTime()));
             textViewContent.setText(notification.getContent());
         }

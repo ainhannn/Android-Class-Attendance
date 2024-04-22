@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.classattendance.R;
 import com.example.classattendance.api.AttendanceAPI;
 import com.example.classattendance.api.NetworkUtil;
-import com.example.classattendance.fragment.FirstFragment;
-import com.example.classattendance.fragment.classitems.attendanceteacher.FragmentCreateAttendance;
 import com.example.classattendance.model.Attendance;
 import com.example.classattendance.recycler.AttendanceAdapter;
 import com.example.classattendance.utils.MyAuth;

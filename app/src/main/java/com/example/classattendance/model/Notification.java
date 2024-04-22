@@ -8,22 +8,22 @@ public class Notification {
     private Date time;
     private int classId;
     private int userId;
-    private String username;
+    private String userName;
     private String content;
 
     public Notification() {}
-    public Notification(int id, Date time, int classId, int userId, String username, String content) {
+    public Notification(int id, Date time, int classId, int userId, String userName, String content) {
         this.id = id;
         this.time = time;
         this.classId = classId;
         this.userId = userId;
-        this.username = username;
+        this.userName = userName;
         this.content = content;
     }
 
-    public Notification(Date time, String username, String content) {
+    public Notification(Date time, String userName, String content) {
         this.time = time;
-        this.username = username;
+        this.userName = userName;
         this.content = content;
     }
 
@@ -59,12 +59,12 @@ public class Notification {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getContent() {
