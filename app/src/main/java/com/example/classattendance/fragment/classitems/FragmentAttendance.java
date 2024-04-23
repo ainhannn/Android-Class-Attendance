@@ -4,9 +4,12 @@ import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,10 +34,17 @@ import com.example.classattendance.model.AttendanceCreateDTO;
 import com.example.classattendance.recycler.AttendanceAdapter;
 import com.example.classattendance.utils.MyAuth;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationAvailability;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.SettingsClient;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -50,12 +60,15 @@ public class FragmentAttendance extends Fragment {
     private BottomSheetBehavior bottomSheetBehavior;
 
     // service
-    private FusedLocationProviderClient fusedLocationClient;
     private AttendanceAPI api;
+    private FusedLocationProviderClient fusedLocationClient;
+    private SettingsClient settingsClient;
+    private LocationCallback locationCallback;
 
     // data
     private AttendanceAdapter adapter;
     private List<Attendance> data = new ArrayList<>();
+    private boolean locationReady;
 
     // const
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -70,7 +83,7 @@ public class FragmentAttendance extends Fragment {
         // Button create new session
         button = rootView.findViewById(R.id.button);
         button.setOnClickListener(v -> {
-            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED){
+            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             } else {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -119,7 +132,7 @@ public class FragmentAttendance extends Fragment {
         }
     }
 
-
+// Teacher
     private void onCreateViewRoleTeacher() {
         // Load data to Recycler View display attendance session list
         loadAdapter(api.getAttendanceRoleTeacher(CURRENT_CLASS_ID, MyAuth.getUid()));
@@ -135,72 +148,75 @@ public class FragmentAttendance extends Fragment {
         // Set onclick event on Bottom Sheet
         Button btnCreateCode = rootView.findViewById(R.id.btn_create_code);
         btnCreateCode.setOnClickListener(v -> {
-            // Check for location permission
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
-            } else {
-                createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
-            }
+            createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
         });
     }
 
     @SuppressLint("MissingPermission")
     private void createCode(String strLate, String strExpiry) {
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(getActivity(), location -> {
-                    // Got last known location. In some rare situations this can be null.
-                    if (location != null) {
-                        // Logic to handle location object
-                        double latitude = location.getLatitude();
-                        double longitude = location.getLongitude();
-                        Log.d("Location", "Provider: " + location.getProvider() + ", Latitude: " + latitude + ", Longitude: " + longitude);
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    // Logic to handle location object
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
 
-                        // Code here
-                        AttendanceCreateDTO dto = new AttendanceCreateDTO();
-                        dto.setCreateTime(new Date());
-                        dto.setLocation(latitude + "," + longitude);
-                        dto.setExpiryAfter(Integer.valueOf(strExpiry));
-                        dto.setLateAfter(Integer.valueOf(strLate));
-                        dto.setClassId(CURRENT_CLASS_ID);
+                    AttendanceCreateDTO dto = new AttendanceCreateDTO();
+                    dto.setCreateTime(new Date());
+                    dto.setLocation(latitude + "," + longitude);
+                    dto.setExpiryAfter(Integer.valueOf(strExpiry));
+                    dto.setLateAfter(Integer.valueOf(strLate));
+                    dto.setClassId(CURRENT_CLASS_ID);
 
-                        // Call API
-                        Call<Attendance> call = api.createAttendance(MyAuth.getUid(), dto);
-                        call.enqueue(new Callback<Attendance>() {
-                            @Override
-                            public void onResponse(Call<Attendance> call, Response<Attendance> response) {
-                                if (response.isSuccessful()) {
-                                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                                    Toast.makeText(getContext(), "Tạo thành công", Toast.LENGTH_SHORT).show();
-                                    data.add(0, response.body());
-                                    adapter.notifyDataSetChanged();
-                                } else {
-                                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                                }
-                            }
-                            @Override
-                            public void onFailure(Call<Attendance> call, Throwable t) {
-                                Log.e(TAG, "onFailure: " + t.getMessage());
-                            }
-                        });
-                    }
-                });
-    }
+                    createCodeCallAPI(dto);
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, fetch location
-                Toast.makeText(getActivity(), "Location permission granted\nTry action again", Toast.LENGTH_SHORT).show();
-            } else {
-                // Permission denied, show a message or handle accordingly
-                Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_SHORT).show();
+                    stopLocationUpdates();
+                }
             }
-        }
+            @Override
+            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
+                super.onLocationAvailability(locationAvailability);
+            }
+        };
+        getLocation();
+    }
+    private void createCodeCallAPI(AttendanceCreateDTO dto) {
+        Call<Attendance> call = api.createAttendance(MyAuth.getUid(), dto);
+        call.enqueue(new Callback<Attendance>() {
+            @Override
+            public void onResponse(Call<Attendance> call, Response<Attendance> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(getContext(), "Tạo thành công", Toast.LENGTH_SHORT).show();
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                    data.add(0, response.body());
+                    adapter.notifyDataSetChanged();
+                } else {
+                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<Attendance> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 
 
+
+
+
+
+
+
+
+
+
+
+// Student
     private void onCreateViewRoleStudent() {
         // Set up for Button create new session
         button.setText("Điểm danh");
@@ -215,6 +231,8 @@ public class FragmentAttendance extends Fragment {
 
     }
 
+//  Shared void
+    // Load data into adaptor
     private void loadAdapter(Call<List<Attendance>> call) {
         call.enqueue(new Callback<List<Attendance>>() {
             @Override
@@ -232,5 +250,80 @@ public class FragmentAttendance extends Fragment {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
+    }
+
+    // Service Location
+    @SuppressLint("MissingPermission")
+    private void getLocation() {
+        if (!locationReady) {
+            ensureLocationReady();
+            Toast.makeText(getContext(),"Thử lại sau khi bật vị trí", Toast.LENGTH_LONG).show();
+        } else {
+            try {
+                fusedLocationClient.requestLocationUpdates(LocationRequest.create()
+                                .setInterval(5000)
+                                .setFastestInterval(500)
+                                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                                .setMaxWaitTime(100),
+                        locationCallback, Looper.myLooper()
+                );
+                Toast.makeText(getContext(),"Vui lòng chờ...", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Đã có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void stopLocationUpdates() {
+        if (fusedLocationClient != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+                    .addOnCompleteListener(task -> {
+                        Log.d("task", task.toString());
+                    });
+        }
+    }
+    @SuppressLint("MissingPermission")
+    public void ensureLocationReady() {
+        locationReady = false;
+
+        // Permission check
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Setting check
+            LocationSettingsRequest request = new LocationSettingsRequest.Builder()
+                    .addAllLocationRequests(Collections.singleton(LocationRequest.create()
+                            .setInterval(5000)
+                            .setFastestInterval(500)
+                            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                            .setMaxWaitTime(100)))
+                    .build();
+
+            settingsClient = LocationServices.getSettingsClient(getContext());
+            settingsClient.checkLocationSettings(request)
+                    .addOnFailureListener(e -> {
+                        Intent intent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        getContext().startActivity(intent);
+                        Log.d("err", e.toString());
+                    })
+                    .addOnSuccessListener(locationSettingsResponse -> {
+                        Log.d("Location", "location setting ok");
+                        locationReady = true;
+                    });
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, fetch location
+                Log.d("Location", "Location permission succeeded");
+                ensureLocationReady();
+            } else {
+                // Permission denied, show a message or handle accordingly
+                Log.d("Location", "Location permission denied");
+                Toast.makeText(getActivity(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
