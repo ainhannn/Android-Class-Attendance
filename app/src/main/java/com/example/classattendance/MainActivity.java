@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_joined_classes) {
                 fragment = new FirstFragment();
                 getIntent().putExtra("filter", "joined_only");
-            } else if (id == R.id.nav_notification) {
-                fragment = new FragmentNotification();
-            } else if (id == R.id.nav_attendance) {
-                fragment = new FragmentAttendance();
+//            } else if (id == R.id.nav_notification) {
+//                fragment = new FragmentNotification();
+//            } else if (id == R.id.nav_attendance) {
+//                fragment = new FragmentAttendance();
             } else if (id == R.id.nav_signout) {
                 MyAuth.signOut();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);

@@ -41,11 +41,11 @@
 
             <group android:checkableBehavior="single">
 
-                <item
-                    android:id="@+id/nav_class_passed"
-                    android:title="Lớp học đã lưu trữ"
-                    android:icon="@drawable/archive"
-                    android:padding="10dp" />
+<!--                <item-->
+<!--                    android:id="@+id/nav_class_passed"-->
+<!--                    android:title="Lớp học đã lưu trữ"-->
+<!--                    android:icon="@drawable/archive"-->
+<!--                    android:padding="10dp" />-->
 
                 <item
                     android:id="@+id/nav_signout"
