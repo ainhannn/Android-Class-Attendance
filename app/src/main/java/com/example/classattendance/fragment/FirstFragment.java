@@ -79,6 +79,9 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
 
         joinClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
+//            NavHostFragment.findNavController(FirstFragment.this)
+//                    .navigate(R.id.action_FirstFragment_to_joinClassFragment);
+
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, new JoinClassFragment())
@@ -88,6 +91,9 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
 
         createClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
+//            NavHostFragment.findNavController(FirstFragment.this)
+//                    .navigate(R.id.action_FirstFragment_to_createClassFragment);
+
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.nav_host_fragment_content_main, new CreateClassFragment())

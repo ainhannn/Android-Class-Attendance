@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -77,6 +78,9 @@ public class JoinClassFragment extends Fragment {
                     fragmentManager.beginTransaction()
                             .replace(R.id.nav_host_fragment_content_main, new FirstFragment())
                             .commit();
+
+//                    NavHostFragment.findNavController(JoinClassFragment.this)
+//                            .navigate(R.id.action_joinClassFragment_to_FirstFragment);
 
                     // Chuyển đến lớp vừa tạo
                     Intent intent = new Intent(getContext(), ClassActivity.class);

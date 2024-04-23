@@ -10,7 +10,6 @@
         android:name="com.example.classattendance.fragment.FirstFragment"
         android:label="@string/first_fragment_label"
         tools:layout="@layout/fragment_first">
-
         <action
             android:id="@+id/action_FirstFragment_to_createClassFragment"
             app:destination="@id/createClassFragment" />
@@ -22,9 +21,17 @@
         android:id="@+id/createClassFragment"
         android:name="com.example.classattendance.fragment.CreateClassFragment"
         android:label="fragment_create_class"
-        tools:layout="@layout/fragment_create_class" />
+        tools:layout="@layout/fragment_create_class">
+        <action
+            android:id="@+id/action_createClassFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
     <fragment
         android:id="@+id/joinClassFragment"
         android:name="com.example.classattendance.fragment.JoinClassFragment"
-        android:label="JoinClassFragment" />
+        android:label="JoinClassFragment" >
+        <action
+            android:id="@+id/action_joinClassFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+    </fragment>
 </navigation>
