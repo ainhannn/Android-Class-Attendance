@@ -12,18 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.classattendance.ClassActivity;
-import com.example.classattendance.MainActivity;
 import com.example.classattendance.R;
 import com.example.classattendance.api.ClassAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.api.UserAPI;
 import com.example.classattendance.databinding.FragmentFirstBinding;
-import com.example.classattendance.model.Class;
 import com.example.classattendance.model.SimpleClass;
 import com.example.classattendance.model.User;
 import com.example.classattendance.recycler.ClassAdapter;
@@ -50,6 +46,7 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     private TextView btnActionSheetDialog;
 
     private List<SimpleClass> data = new ArrayList<>();
+    private String FILTER;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +57,8 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        FILTER = getActivity().getIntent().getStringExtra("filter");
 
         bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
@@ -118,8 +117,16 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
                 if (response.isSuccessful()) {
                     MyAuth.setModelUser(response.body());
                     data.clear();
-                    data.addAll(MyAuth.getModelUser().getCreatedClasses());
-                    data.addAll(MyAuth.getModelUser().getJoinedClasses());
+
+                    if (FILTER != null && FILTER.equalsIgnoreCase("created_only")) {
+                        data.addAll(MyAuth.getModelUser().getCreatedClasses());
+                    } else if (FILTER != null && FILTER.equalsIgnoreCase("joined_only")) {
+                        data.addAll(MyAuth.getModelUser().getJoinedClasses());
+                    } else {
+                        data.addAll(MyAuth.getModelUser().getCreatedClasses());
+                        data.addAll(MyAuth.getModelUser().getJoinedClasses());
+                    }
+
                     adapter.notifyDataSetChanged();
                 }
             }

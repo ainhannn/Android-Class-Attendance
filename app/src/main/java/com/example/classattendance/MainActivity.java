@@ -54,16 +54,17 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_school) {
                 fragment = new FirstFragment();
+                getIntent().putExtra("filter", "all");
             } else if (id == R.id.nav_created_classes) {
-                fragment = new CreateClassFragment();
+                fragment = new FirstFragment();
+                getIntent().putExtra("filter", "created_only");
             } else if (id == R.id.nav_joined_classes) {
-                fragment = new JoinClassFragment();
+                fragment = new FirstFragment();
+                getIntent().putExtra("filter", "joined_only");
             } else if (id == R.id.nav_notification) {
                 fragment = new FragmentNotification();
             } else if (id == R.id.nav_attendance) {
                 fragment = new FragmentAttendance();
-            } else if (id == R.id.nav_class_passed) {
-                fragment = new FirstFragment();
             } else if (id == R.id.nav_signout) {
                 MyAuth.signOut();
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
