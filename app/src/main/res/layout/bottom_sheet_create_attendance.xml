@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/create_session_bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.classitems.attendanceteacher.FragmentCreateAttendance">
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
 
     <LinearLayout
         android:layout_width="390dp"
         android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <!-- TODO: Update blank fragment layout -->
-
+        android:orientation="vertical"
+        android:background="@color/white">
 
         <EditText
             android:id="@+id/txt_time_expiry"
@@ -32,4 +32,4 @@
             android:text="Button" />
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>
