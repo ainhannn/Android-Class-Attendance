@@ -21,7 +21,7 @@ public interface AttendanceAPI {
                                       @Body AttendanceCreateDTO attendanceCreateDTO);
 
     @POST("attendance/take")
-    Call<AttendanceRecord> takeAttendance(@Query("UID") String uid,
+    Call<Attendance> takeAttendance(@Query("UID") String uid,
                                           @Body AttendanceTakeDTO attendanceTakeDTO);
 
 

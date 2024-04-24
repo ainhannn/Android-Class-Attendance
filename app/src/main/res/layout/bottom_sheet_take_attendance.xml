@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/create_session_bottom_sheet"
+    android:id="@+id/take_attendance_bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:behavior_peekHeight="0dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
 
     <LinearLayout
-        android:id="@+id/create_code_layout"
+        android:id="@+id/type_code_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -20,32 +20,41 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tạo mã điểm danh"
+            android:text="Điểm danh"
             android:gravity="center"
             android:textSize="25sp"
             android:textStyle="bold"
             android:textColor="@color/purple_500"
             android:layout_marginBottom="20dp"/>
 
-        <EditText
-            android:id="@+id/txt_time_expiry"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hieu luc (phut)" />
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/txt_time_late"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Dung gio (phut)" />
+            <EditText
+                android:id="@+id/txt_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Mã điểm danh" />
+
+            <ImageView
+                android:id="@+id/btn_scan_qr"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginLeft="18dp"
+                android:src="@color/black" />
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/btn_create_code"
+            android:id="@+id/btn_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
-            android:text="Xác nhận tạo" />
+            android:text="Xác nhận" />
 
     </LinearLayout>
 

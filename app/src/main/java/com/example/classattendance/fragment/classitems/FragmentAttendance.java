@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -31,8 +32,20 @@ import com.example.classattendance.api.AttendanceAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Attendance;
 import com.example.classattendance.model.AttendanceCreateDTO;
+import com.example.classattendance.model.AttendanceTakeDTO;
 import com.example.classattendance.recycler.AttendanceAdapter;
 import com.example.classattendance.utils.MyAuth;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
@@ -55,6 +68,8 @@ import retrofit2.Response;
 public class FragmentAttendance extends Fragment {
     // component
     private View rootView;
+    private BarChart barChart;
+    private PieChart pieChart;
     private Button button;
     private RecyclerView recyclerView;
     private BottomSheetBehavior bottomSheetBehavior;
@@ -78,7 +93,16 @@ public class FragmentAttendance extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Data
+        CURRENT_CLASS_ID = getActivity().getIntent().getIntExtra("class_id", 0);
+        ROLE = getActivity().getIntent().getStringExtra("role");
+
+        // RootView
         rootView = inflater.inflate(R.layout.fragment_attendance, container, false);
+
+        // Chart
+        BarChart barChart = rootView.findViewById(R.id.bar_chart);
+        PieChart pieChart = rootView.findViewById(R.id.pie_chart);
 
         // Button create new session
         button = rootView.findViewById(R.id.button);
@@ -99,10 +123,6 @@ public class FragmentAttendance extends Fragment {
         // Service
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         api = NetworkUtil.self().getRetrofit().create(AttendanceAPI.class);
-
-        // Data
-        CURRENT_CLASS_ID = getActivity().getIntent().getIntExtra("class_id", 0);
-        ROLE = getActivity().getIntent().getStringExtra("role");
 
         if (ROLE.equalsIgnoreCase("teacher")) onCreateViewRoleTeacher();
         else onCreateViewRoleStudent();
@@ -132,14 +152,17 @@ public class FragmentAttendance extends Fragment {
         }
     }
 
-// Teacher
     private void onCreateViewRoleTeacher() {
+        // Chart
+        barChart = rootView.findViewById(R.id.bar_chart);
+        barChart.setVisibility(View.VISIBLE);
+
         // Load data to Recycler View display attendance session list
         loadAdapter(api.getAttendanceRoleTeacher(CURRENT_CLASS_ID, MyAuth.getUid()));
 
         // Bottom Sheet create new session
-        RelativeLayout createClassLayout = rootView.findViewById(R.id.create_session_bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(createClassLayout);
+        RelativeLayout layout = rootView.findViewById(R.id.create_session_bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(layout);
 
         // EditText on Bottom Sheet
         EditText txtExpiry = rootView.findViewById(R.id.txt_time_expiry);
@@ -151,8 +174,140 @@ public class FragmentAttendance extends Fragment {
             createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
         });
     }
+    private void onCreateViewRoleStudent() {
+        // Chart
+        pieChart = rootView.findViewById(R.id.pie_chart);
+        pieChart.setVisibility(View.VISIBLE);
 
-    @SuppressLint("MissingPermission")
+        // Set up for Button create new session
+        button.setText("Điểm danh");
+
+        // Load data to Recycler View display attendance session list
+        loadAdapter(api.getAttendanceRoleStudent(CURRENT_CLASS_ID, MyAuth.getUid()));
+
+        // Bottom Sheet create new session
+        RelativeLayout layout = rootView.findViewById(R.id.take_attendance_bottom_sheet);
+        bottomSheetBehavior = BottomSheetBehavior.from(layout);
+
+        // EditText on Bottom Sheet
+        EditText txtCode = rootView.findViewById(R.id.txt_code);
+        ImageView btnScan = rootView.findViewById(R.id.btn_scan_qr);
+
+        // Set onclick event on Bottom Sheet
+        Button btnSubmit = rootView.findViewById(R.id.btn_submit);
+        btnSubmit.setOnClickListener(v -> {
+            takeAttendance(txtCode.getText().toString());
+        });
+    }
+
+    // Load data into adaptor
+    private void loadAdapter(Call<List<Attendance>> call) {
+        call.enqueue(new Callback<List<Attendance>>() {
+            @Override
+            public void onResponse(Call<List<Attendance>> call, Response<List<Attendance>> response) {
+                if (response.isSuccessful()) {
+                    data.clear();
+                    data.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+
+                    if (ROLE.equalsIgnoreCase("teacher"))
+                        loadBarChart();
+                    else
+                        loadPieChart();
+                } else {
+                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<Attendance>> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+    }
+    private void loadBarChart() {
+        // Tạo một BarChart từ XML hoặc trong code
+        BarChart barChart = rootView.findViewById(R.id.bar_chart);
+
+        // Tạo dữ liệu cho biểu đồ
+        List<BarEntry> entries1 = new ArrayList<>();
+        List<BarEntry> entries2 = new ArrayList<>();
+
+        Collections.reverse(data);
+        int i = 0;
+        for (Attendance a : data) {
+            entries1.add(new BarEntry(++i, a.getPresentCount()));
+            entries2.add(new BarEntry(i, a.getLateCount()));
+        }
+
+        // Tạo các BarDataSet cho màu xanh và màu vàng
+        BarDataSet dataSet1 = new BarDataSet(entries1, "On time");
+        dataSet1.setColor(Color.GREEN);
+        BarDataSet dataSet2 = new BarDataSet(entries2, "Late");
+        dataSet2.setColor(Color.YELLOW);
+
+        // Chồng các BarDataSet lên nhau để tạo thành cột chồng
+        BarData barData = new BarData(dataSet1, dataSet2);
+        barChart.setData(barData);
+
+        // Cấu hình biểu đồ
+        barChart.setDrawValueAboveBar(true);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawBorders(false);
+
+        // Tuỳ chỉnh trục y để hiển thị số nguyên
+        barChart.getAxisRight().setEnabled(false);
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.mAxisMinimum = 0;
+        leftAxis.setGranularity(1);
+
+        // Tuỳ chỉnh trục x
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Đặt trục x ở dưới biểu đồ
+        xAxis.setDrawGridLines(false); // Tắt đường kẻ lưới trên trục x
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return "Buổi " + (int) value;
+            }
+        });
+
+        // Hiển thị biểu đồ
+        barChart.invalidate();
+    }
+    private void loadPieChart() {
+        if (data.size() == 0) return;
+
+        float onTime = 0;
+        float late = 0;
+        for (Attendance a : data) {
+            onTime += a.getPresentCount();
+            late += a.getLateCount();
+        }
+
+        // Tạo dữ liệu cho PieChart
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(onTime/data.size(), "On time"));
+        entries.add(new PieEntry(late/data.size(), "Late"));
+        entries.add(new PieEntry(0f, ""));
+
+        // Tạo PieDataSet
+        PieDataSet dataSet = new PieDataSet(entries, "Biểu đồ tròn");
+
+        // Cấu hình màu sắc cho các phần
+        dataSet.setColors(Color.GREEN, Color.YELLOW, Color.TRANSPARENT); // Màu trong suốt cho phần trống
+
+        // Tạo PieData từ PieDataSet
+        PieData pieData = new PieData(dataSet);
+
+        // Đặt dữ liệu cho PieChart
+        pieChart.setData(pieData);
+
+        // Hiển thị PieChart
+        pieChart.invalidate();
+    }
+
+
+    // Create code
     private void createCode(String strLate, String strExpiry) {
         locationCallback = new LocationCallback() {
             @Override
@@ -206,51 +361,58 @@ public class FragmentAttendance extends Fragment {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-// Student
-    private void onCreateViewRoleStudent() {
-        // Set up for Button create new session
-        button.setText("Điểm danh");
-
-        // Load data to Recycler View display attendance session list
-        loadAdapter(api.getAttendanceRoleStudent(CURRENT_CLASS_ID, MyAuth.getUid()));
-
-        // Bottom Sheet create new session
-        RelativeLayout createClassLayout = rootView.findViewById(R.id.create_session_bottom_sheet);
-        bottomSheetBehavior = BottomSheetBehavior.from(createClassLayout);
-
-
-    }
-
-//  Shared void
-    // Load data into adaptor
-    private void loadAdapter(Call<List<Attendance>> call) {
-        call.enqueue(new Callback<List<Attendance>>() {
+    // Take attendance
+    private void takeAttendance(String strCode) {
+        locationCallback = new LocationCallback() {
             @Override
-            public void onResponse(Call<List<Attendance>> call, Response<List<Attendance>> response) {
+            public void onLocationResult(LocationResult locationResult) {
+                Location location = locationResult.getLastLocation();
+                if (location != null) {
+                    // Logic to handle location object
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    Log.d("Location", "Latitude: " + latitude + ", Longitude: " + longitude);
+
+
+                    AttendanceTakeDTO dto = new AttendanceTakeDTO();
+                    dto.setTime(new Date());
+                    dto.setLocation(latitude + "," + longitude);
+                    dto.setCode(strCode);
+
+                    takeAttendanceCallAPI(dto);
+
+                    stopLocationUpdates();
+                }
+            }
+            @Override
+            public void onLocationAvailability(@NonNull LocationAvailability locationAvailability) {
+                super.onLocationAvailability(locationAvailability);
+            }
+        };
+        getLocation();
+    }
+    private void takeAttendanceCallAPI(AttendanceTakeDTO dto) {
+        Call<Attendance> call = api.takeAttendance(MyAuth.getUid(), dto);
+        call.enqueue(new Callback<Attendance>() {
+            @Override
+            public void onResponse(Call<Attendance> call, Response<Attendance> response) {
                 if (response.isSuccessful()) {
-                    data.clear();
-                    data.addAll(response.body());
+                    Toast.makeText(getContext(), "Điểm danh thành công", Toast.LENGTH_SHORT).show();
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                    data.add(0, response.body());
                     adapter.notifyDataSetChanged();
                 } else {
                     Log.e(TAG, "onResponse: " + response.errorBody().toString());
                 }
             }
             @Override
-            public void onFailure(Call<List<Attendance>> call, Throwable t) {
+            public void onFailure(Call<Attendance> call, Throwable t) {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
     }
+
 
     // Service Location
     @SuppressLint("MissingPermission")
@@ -281,7 +443,6 @@ public class FragmentAttendance extends Fragment {
                     });
         }
     }
-    @SuppressLint("MissingPermission")
     public void ensureLocationReady() {
         locationReady = false;
 
