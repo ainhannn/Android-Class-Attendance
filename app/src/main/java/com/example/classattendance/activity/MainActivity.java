@@ -1,4 +1,4 @@
-package com.example.classattendance;
+package com.example.classattendance.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +12,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
+import com.example.classattendance.R;
 import com.example.classattendance.databinding.ActivityMainBinding;
-import com.example.classattendance.fragment.CreateClassFragment;
 import com.example.classattendance.fragment.FirstFragment;
-import com.example.classattendance.fragment.JoinClassFragment;
-import com.example.classattendance.fragment.classitems.FragmentAttendance;
-import com.example.classattendance.fragment.classitems.FragmentNotification;
 import com.example.classattendance.utils.MyAuth;
 import com.google.android.material.navigation.NavigationView;
 

@@ -1,4 +1,4 @@
-package com.example.classattendance;
+package com.example.classattendance.activity;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.example.classattendance.R;
 import com.example.classattendance.fragment.classitems.FragmentAttendance;
 import com.example.classattendance.fragment.classitems.FragmentNotification;
 import com.example.classattendance.fragment.classitems.FragmentPeople;

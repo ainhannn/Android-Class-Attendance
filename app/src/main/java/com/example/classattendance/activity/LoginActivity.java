@@ -1,4 +1,4 @@
-package com.example.classattendance;
+package com.example.classattendance.activity;
 
 import static android.content.ContentValues.TAG;
 
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.classattendance.R;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.api.UserAPI;
 import com.example.classattendance.model.User;
