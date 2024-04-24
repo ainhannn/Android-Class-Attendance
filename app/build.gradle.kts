@@ -77,6 +77,9 @@ dependencies {
 
     // QR code
     implementation("com.google.zxing:core:3.4.1")
+    // QR Scanner
+    implementation ("com.github.yuriy-budiyev:code-scanner:2.3.0")
+
 
     // Chart
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

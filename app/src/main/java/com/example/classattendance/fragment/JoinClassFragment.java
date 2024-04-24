@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.classattendance.ClassActivity;
+import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
 import com.example.classattendance.api.ClassAPI;
 import com.example.classattendance.api.NetworkUtil;

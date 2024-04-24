@@ -1,5 +1,6 @@
 package com.example.classattendance.fragment.classitems;
 
+import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
 
 import android.Manifest;
@@ -22,12 +23,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
+import com.example.classattendance.activity.ScanQRActivity;
 import com.example.classattendance.api.AttendanceAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Attendance;
@@ -35,6 +38,7 @@ import com.example.classattendance.model.AttendanceCreateDTO;
 import com.example.classattendance.model.AttendanceTakeDTO;
 import com.example.classattendance.recycler.AttendanceAdapter;
 import com.example.classattendance.utils.MyAuth;
+import com.example.classattendance.utils.Valid;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -73,6 +77,7 @@ public class FragmentAttendance extends Fragment {
     private Button button;
     private RecyclerView recyclerView;
     private BottomSheetBehavior bottomSheetBehavior;
+    private EditText txtCode;
 
     // service
     private AttendanceAPI api;
@@ -83,10 +88,11 @@ public class FragmentAttendance extends Fragment {
     // data
     private AttendanceAdapter adapter;
     private List<Attendance> data = new ArrayList<>();
-    private boolean locationReady;
+    private boolean locationReady = false;
 
     // const
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    private static final int REQUEST_CODE_SCAN_QR = 2;
     private int CURRENT_CLASS_ID;
     private String ROLE;
 
@@ -101,8 +107,8 @@ public class FragmentAttendance extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_attendance, container, false);
 
         // Chart
-        BarChart barChart = rootView.findViewById(R.id.bar_chart);
-        PieChart pieChart = rootView.findViewById(R.id.pie_chart);
+        barChart = rootView.findViewById(R.id.bar_chart);
+        pieChart = rootView.findViewById(R.id.pie_chart);
 
         // Button create new session
         button = rootView.findViewById(R.id.button);
@@ -113,6 +119,9 @@ public class FragmentAttendance extends Fragment {
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
+
+        // EditText get code from scanner
+        txtCode = rootView.findViewById(R.id.txt_code);
 
         // Recycler View display attendance session list
         recyclerView = rootView.findViewById(R.id.recyclerViewAttendance);
@@ -153,10 +162,6 @@ public class FragmentAttendance extends Fragment {
     }
 
     private void onCreateViewRoleTeacher() {
-        // Chart
-        barChart = rootView.findViewById(R.id.bar_chart);
-        barChart.setVisibility(View.VISIBLE);
-
         // Load data to Recycler View display attendance session list
         loadAdapter(api.getAttendanceRoleTeacher(CURRENT_CLASS_ID, MyAuth.getUid()));
 
@@ -171,14 +176,14 @@ public class FragmentAttendance extends Fragment {
         // Set onclick event on Bottom Sheet
         Button btnCreateCode = rootView.findViewById(R.id.btn_create_code);
         btnCreateCode.setOnClickListener(v -> {
-            createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
+            if (Valid.isNumber(String.valueOf(txtExpiry.getText()))
+                    && (txtLate.getText() == null || Valid.isNumber(String.valueOf(txtLate.getText()))))
+                createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
+            else
+                Toast.makeText(getContext(), "Vui lòng nhập mã hợp lệ", Toast.LENGTH_SHORT).show();
         });
     }
     private void onCreateViewRoleStudent() {
-        // Chart
-        pieChart = rootView.findViewById(R.id.pie_chart);
-        pieChart.setVisibility(View.VISIBLE);
-
         // Set up for Button create new session
         button.setText("Điểm danh");
 
@@ -189,15 +194,32 @@ public class FragmentAttendance extends Fragment {
         RelativeLayout layout = rootView.findViewById(R.id.take_attendance_bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(layout);
 
-        // EditText on Bottom Sheet
-        EditText txtCode = rootView.findViewById(R.id.txt_code);
+        // Scan QR button
         ImageView btnScan = rootView.findViewById(R.id.btn_scan_qr);
+        btnScan.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ScanQRActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_SCAN_QR);
+        });
 
         // Set onclick event on Bottom Sheet
         Button btnSubmit = rootView.findViewById(R.id.btn_submit);
         btnSubmit.setOnClickListener(v -> {
-            takeAttendance(txtCode.getText().toString());
+            if (Valid.isCode(String.valueOf(txtCode.getText())))
+                takeAttendance(String.valueOf(txtCode.getText()));
+            else
+                Toast.makeText(getContext(), "Vui lòng nhập mã hợp lệ", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SCAN_QR && resultCode == RESULT_OK && data != null) {
+            String result = data.getStringExtra("result");
+            if (result != null) {
+                txtCode.setText(result);
+            }
+        }
     }
 
     // Load data into adaptor
@@ -225,8 +247,7 @@ public class FragmentAttendance extends Fragment {
         });
     }
     private void loadBarChart() {
-        // Tạo một BarChart từ XML hoặc trong code
-        BarChart barChart = rootView.findViewById(R.id.bar_chart);
+        if (data.size() == 0) return;
 
         // Tạo dữ liệu cho biểu đồ
         List<BarEntry> entries1 = new ArrayList<>();
@@ -273,6 +294,7 @@ public class FragmentAttendance extends Fragment {
 
         // Hiển thị biểu đồ
         barChart.invalidate();
+        barChart.setVisibility(View.VISIBLE);
     }
     private void loadPieChart() {
         if (data.size() == 0) return;
@@ -283,15 +305,17 @@ public class FragmentAttendance extends Fragment {
             onTime += a.getPresentCount();
             late += a.getLateCount();
         }
+        onTime = onTime/ data.size();
+        late = late/ data.size();
 
         // Tạo dữ liệu cho PieChart
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(onTime/data.size(), "On time"));
-        entries.add(new PieEntry(late/data.size(), "Late"));
-        entries.add(new PieEntry(0f, ""));
+        entries.add(new PieEntry(onTime, "On time"));
+        entries.add(new PieEntry(late, "Late"));
+        entries.add(new PieEntry(1f - onTime - late, ""));
 
         // Tạo PieDataSet
-        PieDataSet dataSet = new PieDataSet(entries, "Biểu đồ tròn");
+        PieDataSet dataSet = new PieDataSet(entries, "");
 
         // Cấu hình màu sắc cho các phần
         dataSet.setColors(Color.GREEN, Color.YELLOW, Color.TRANSPARENT); // Màu trong suốt cho phần trống
@@ -304,6 +328,7 @@ public class FragmentAttendance extends Fragment {
 
         // Hiển thị PieChart
         pieChart.invalidate();
+        pieChart.setVisibility(View.VISIBLE);
     }
 
 

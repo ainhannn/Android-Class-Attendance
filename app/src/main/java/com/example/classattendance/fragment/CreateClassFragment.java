@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.classattendance.ClassActivity;
+import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
 import com.example.classattendance.api.ClassAPI;
 import com.example.classattendance.api.NetworkUtil;

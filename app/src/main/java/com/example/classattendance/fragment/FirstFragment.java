@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.classattendance.ClassActivity;
+import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
 import com.example.classattendance.api.ClassAPI;
 import com.example.classattendance.api.NetworkUtil;
