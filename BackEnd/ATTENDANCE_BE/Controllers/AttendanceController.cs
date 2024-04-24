@@ -3,6 +3,7 @@ using ATTENDANCE_BE.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ATTENDANCE_BE.Controllers;
 
@@ -54,43 +55,36 @@ public class AttendanceController : ControllerBase
         var rs = await _context.Attendances
             .Where(c => c.ClassId == classId)
             .OrderByDescending(c => c.Time)
-            .Join(
-                _context.AttendanceCodes,
+            .Join(_context.AttendanceCodes,
                 a => a.Id,
                 ac => ac.AttendanceId,
-                (a, ac) => new { Attendance = a, ac.Code }) // Call x, select AttendanceCode here
-            .Join(
-                _context.AttendanceRecords.OrderBy(c => c.Time),
-                x => x.Attendance.Id,
-                ar => ar.AttendanceId,
-                (x, ar) => new { x.Attendance, x.Code, AttendanceRecord = ar}) // Call y, include records here
-            .Join(
-                _context.Users,
-                y => y.AttendanceRecord.UserId,
-                u => u.Id,
-                (y, u) => new { y.Attendance, y.Code, y.AttendanceRecord, u.Name}) // Call joinedData, select User.Name here
-            
-            .Select(joinedData => new Attendance {
-                Id = joinedData.Attendance.Id,
-                Time = joinedData.Attendance.Time,
-                ClassId = joinedData.Attendance.ClassId,
-                Times = joinedData.Attendance.Times,
-                Code = joinedData.Code,
-                AttendanceRecords = new List<AttendanceRecord>
-                {
-                    new AttendanceRecord
-                    {
-                        AttendanceId = joinedData.AttendanceRecord.AttendanceId,
-                        UserId = joinedData.AttendanceRecord.UserId,
-                        Time = joinedData.AttendanceRecord.Time,
-                        Status = joinedData.AttendanceRecord.Status,
-                        UserName = joinedData.Name
-                    }
-                }
-            })
+                (a, ac) => new Attendance {
+                    Id = a.Id,
+                    Time = a.Time,
+                    ClassId = a.ClassId,
+                    Times = a.Times,
+                    Code = ac.Code
+                })
             .ToListAsync();
+            
+        for (int i = 0; i < rs.Count; i++) {
+            var aId = rs[i].Id;
+            rs[i].AttendanceRecords = await _context.AttendanceRecords
+                .Where(c => c.AttendanceId == aId)
+                .Join(_context.Users,
+                    ar => ar.UserId,
+                    u => u.Id,
+                    (ar, u) => new AttendanceRecord {
+                        AttendanceId = ar.AttendanceId,
+                        UserId = ar.UserId,
+                        Time = ar.Time,
+                        Status = ar.Status,
+                        UserName = u.Name
+                    })
+                .ToListAsync();
+        };
 
-            return rs;
+        return rs;                                                          
     }
 
 // -- STUDENT ROLE --
