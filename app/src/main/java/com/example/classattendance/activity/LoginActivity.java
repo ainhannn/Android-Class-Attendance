@@ -1,42 +1,32 @@
 package com.example.classattendance.activity;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.classattendance.R;
-import com.example.classattendance.api.NetworkUtil;
-import com.example.classattendance.api.UserAPI;
-import com.example.classattendance.model.User;
 import com.example.classattendance.utils.MyAuth;
+import com.example.classattendance.viewmodel.UserVM;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button googleAuth;
-    GoogleSignInClient mGoogleSignInClient;
+    private Button googleAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private UserVM userVM;
+
 
     int RC_SIGN_IN = 20;
 
@@ -53,14 +43,12 @@ public class LoginActivity extends AppCompatActivity {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        googleAuth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(intent, RC_SIGN_IN);
-            }
+        googleAuth.setOnClickListener(v -> {
+            Intent intent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(intent, RC_SIGN_IN);
         });
+
+        userVM = new ViewModelProvider(this).get(UserVM.class);
     }
 
     @Override
@@ -90,18 +78,15 @@ public class LoginActivity extends AppCompatActivity {
     private void firebaseAuthWithGoogle(String idToken){
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         MyAuth.self().signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LoginActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
-                            setModelUserAfterLogin();
-                            switchActivity();
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Toast.makeText(LoginActivity.this, "Authentication success.", Toast.LENGTH_SHORT).show();
+                        setModelUserAfterLogin();
+                        switchActivity();
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -112,22 +97,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setModelUserAfterLogin() {
-        UserAPI userAPI = NetworkUtil.self().getRetrofit().create(UserAPI.class);
-        Call<User> call = userAPI.login(MyAuth.getModelUser().getUid());
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    MyAuth.setModelUser(response.body());
-                    Log.e(TAG, "onResponse: successful");
-                } else {
-                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
+        userVM.login(MyAuth.getUid()).observe(this, data -> {
+            if (data != null) {
+                MyAuth.setModelUser(data);
+            } else {
+                Toast.makeText(this, "Loading failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -10,7 +10,7 @@ import com.example.classattendance.R;
 import com.example.classattendance.fragment.classitems.FragmentAttendance;
 import com.example.classattendance.fragment.classitems.FragmentNotification;
 import com.example.classattendance.fragment.classitems.FragmentPeople;
-import com.example.classattendance.recycler.VPAdapter;
+import com.example.classattendance.adaptor.VPAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class ClassActivity extends AppCompatActivity {

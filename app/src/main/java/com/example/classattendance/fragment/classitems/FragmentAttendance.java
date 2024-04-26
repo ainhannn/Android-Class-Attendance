@@ -31,12 +31,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
 import com.example.classattendance.activity.ScanQRActivity;
-import com.example.classattendance.api.AttendanceAPI;
+import com.example.classattendance.api.IAttendanceAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Attendance;
 import com.example.classattendance.model.AttendanceCreateDTO;
 import com.example.classattendance.model.AttendanceTakeDTO;
-import com.example.classattendance.recycler.AttendanceAdapter;
+import com.example.classattendance.adaptor.AttendanceAdapter;
 import com.example.classattendance.utils.MyAuth;
 import com.example.classattendance.utils.Valid;
 import com.github.mikephil.charting.charts.BarChart;
@@ -80,7 +80,7 @@ public class FragmentAttendance extends Fragment {
     private EditText txtCode;
 
     // service
-    private AttendanceAPI api;
+    private IAttendanceAPI api;
     private FusedLocationProviderClient fusedLocationClient;
     private SettingsClient settingsClient;
     private LocationCallback locationCallback;
@@ -131,7 +131,7 @@ public class FragmentAttendance extends Fragment {
 
         // Service
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        api = NetworkUtil.self().getRetrofit().create(AttendanceAPI.class);
+        api = NetworkUtil.self().getRetrofit().create(IAttendanceAPI.class);
 
         if (ROLE.equalsIgnoreCase("teacher")) onCreateViewRoleTeacher();
         else onCreateViewRoleStudent();
@@ -176,8 +176,8 @@ public class FragmentAttendance extends Fragment {
         // Set onclick event on Bottom Sheet
         Button btnCreateCode = rootView.findViewById(R.id.btn_create_code);
         btnCreateCode.setOnClickListener(v -> {
-            if (Valid.isNumber(String.valueOf(txtExpiry.getText()))
-                    && (txtLate.getText() == null || Valid.isNumber(String.valueOf(txtLate.getText()))))
+            if (Valid.isInteger(String.valueOf(txtExpiry.getText()))
+                    && (txtLate.getText() == null || Valid.isInteger(String.valueOf(txtLate.getText()))))
                 createCode(txtLate.getText().toString(), txtExpiry.getText().toString());
             else
                 Toast.makeText(getContext(), "Vui lòng nhập mã hợp lệ", Toast.LENGTH_SHORT).show();

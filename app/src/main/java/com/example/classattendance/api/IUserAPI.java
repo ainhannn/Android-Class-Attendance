@@ -11,7 +11,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface UserAPI {
+public interface IUserAPI {
     @GET("user/login")
     Call<User> login(
             @Query("UID") String uid);

@@ -2,6 +2,9 @@ package com.example.classattendance.api;
 
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.ClassDTO;
+import com.example.classattendance.model.SimpleClass;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -12,7 +15,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
-public interface ClassAPI {
+public interface IClassAPI {
     @POST("class/create")
     Call<Class> createClass(@Query("UID") String uid,
                             @Body ClassDTO classDTO);

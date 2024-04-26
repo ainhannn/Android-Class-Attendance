@@ -20,12 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
-import com.example.classattendance.api.ClassAPI;
+import com.example.classattendance.api.IClassAPI;
 import com.example.classattendance.api.NetworkUtil;
-import com.example.classattendance.api.NotificationAPI;
+import com.example.classattendance.api.INotificationAPI;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.Notification;
-import com.example.classattendance.recycler.NotificationAdapter;
+import com.example.classattendance.adaptor.NotificationAdapter;
 import com.example.classattendance.utils.MyAuth;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class FragmentNotification extends Fragment {
         iconSend.setOnClickListener(v -> {
             String content = editText.getText().toString();
             if (!content.isEmpty()) {
-                NotificationAPI api = NetworkUtil.self().getRetrofit().create(NotificationAPI.class);
+                INotificationAPI api = NetworkUtil.self().getRetrofit().create(INotificationAPI.class);
                 Call<Notification> call = api.createNotification(
                         getActivity().getIntent().getIntExtra("class_id", 0),
                         MyAuth.getUid(),
@@ -100,7 +100,7 @@ public class FragmentNotification extends Fragment {
 
 
         // Load data
-        ClassAPI api = NetworkUtil.self().getRetrofit().create(ClassAPI.class);
+        IClassAPI api = NetworkUtil.self().getRetrofit().create(IClassAPI.class);
         Call<Class> call = api.getClassById(getActivity().getIntent().getIntExtra("class_id", 0));
         call.enqueue(new Callback<Class>() {
             @Override
@@ -135,7 +135,7 @@ public class FragmentNotification extends Fragment {
     public void onResume() {
         super.onResume();
 
-        NotificationAPI api = NetworkUtil.self().getRetrofit().create(NotificationAPI.class);
+        INotificationAPI api = NetworkUtil.self().getRetrofit().create(INotificationAPI.class);
         Call<List<Notification>> call = api.getNotificationByClassId(getActivity().getIntent().getIntExtra("class_id", 0));
         call.enqueue(new Callback<List<Notification>>() {
             @Override

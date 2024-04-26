@@ -1,4 +1,4 @@
-package com.example.classattendance.recycler;
+package com.example.classattendance.adaptor;
 
 import android.util.Log;
 import android.view.LayoutInflater;

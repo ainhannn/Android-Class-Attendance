@@ -1,7 +1,6 @@
 package com.example.classattendance.fragment.classitems;
 
 import static android.content.ContentValues.TAG;
-import static androidx.core.content.ContextCompat.getSystemService;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -9,9 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -19,12 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
-import com.example.classattendance.api.ClassAPI;
+import com.example.classattendance.api.IClassAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.SimpleUser;
-import com.example.classattendance.recycler.MemberAdapter;
-import com.example.classattendance.utils.MyAuth;
+import com.example.classattendance.adaptor.MemberAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +55,7 @@ public class FragmentPeople extends Fragment {
         recyclerView.setAdapter(memberAdapter);
 
         // Load data
-        ClassAPI api = NetworkUtil.self().getRetrofit().create(ClassAPI.class);
+        IClassAPI api = NetworkUtil.self().getRetrofit().create(IClassAPI.class);
         Call<Class> call = api.getClassById(getActivity().getIntent().getIntExtra("class_id", 0));
         call.enqueue(new Callback<Class>() {
             @Override

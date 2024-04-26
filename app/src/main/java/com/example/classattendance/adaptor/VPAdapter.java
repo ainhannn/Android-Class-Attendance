@@ -1,4 +1,4 @@
-package com.example.classattendance.recycler;
+package com.example.classattendance.adaptor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
