@@ -17,6 +17,9 @@ import com.example.classattendance.R;
 import com.example.classattendance.databinding.ActivityMainBinding;
 import com.example.classattendance.fragment.FirstFragment;
 import com.example.classattendance.utils.MyAuth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.navigation.NavigationView;
 
 
@@ -64,9 +67,17 @@ public class MainActivity extends AppCompatActivity {
 //            } else if (id == R.id.nav_attendance) {
 //                fragment = new FragmentAttendance();
             } else if (id == R.id.nav_signout) {
-                MyAuth.signOut();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                // Đăng xuất Google SignIn Client nếu bạn sử dụng
+                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
+                googleSignInClient.signOut().addOnCompleteListener(this,
+                        task -> {
+                            // MyAuth.signOut();
+                            // Intent mới với cờ CLEAR_TOP để làm sạch ngăn xếp hoạt động
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish(); // Gọi finish() để kết thúc MainActivity này
+                        });
             }
             if (fragment != null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, fragment).commit(); // Use the correct container ID
