@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "223885173194-j8q9a0013si1bf6lrpp7if0lm0o0rltq.apps.googleusercontent.com",
+          "client_id": "223885173194-ldsmii0d63i7amr1p939849o8n120699.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.classattendance",
-            "certificate_hash": "dd59ba91240051b885b7b3242f576ad60e9e59f6"
+            "certificate_hash": "3965aa3ae87a000e5513d55c7510e482036ef86c"
           }
         },
         {
