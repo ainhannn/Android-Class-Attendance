@@ -1,7 +1,6 @@
 package com.example.classattendance.fragment.classitems;
 
 import static android.app.Activity.RESULT_OK;
-import static android.content.ContentValues.TAG;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -26,19 +25,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.classattendance.R;
 import com.example.classattendance.activity.ScanQRActivity;
-import com.example.classattendance.api.IAttendanceAPI;
-import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Attendance;
 import com.example.classattendance.model.AttendanceCreateDTO;
 import com.example.classattendance.model.AttendanceTakeDTO;
 import com.example.classattendance.adaptor.AttendanceAdapter;
-import com.example.classattendance.utils.MyAuth;
 import com.example.classattendance.utils.Valid;
+import com.example.classattendance.viewmodel.AttendanceVM;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -65,10 +64,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class FragmentAttendance extends Fragment {
     // component
     private View rootView;
@@ -80,7 +75,7 @@ public class FragmentAttendance extends Fragment {
     private EditText txtCode;
 
     // service
-    private IAttendanceAPI api;
+    private AttendanceVM attendanceVM;
     private FusedLocationProviderClient fusedLocationClient;
     private SettingsClient settingsClient;
     private LocationCallback locationCallback;
@@ -102,6 +97,10 @@ public class FragmentAttendance extends Fragment {
         // Data
         CURRENT_CLASS_ID = getActivity().getIntent().getIntExtra("class_id", 0);
         ROLE = getActivity().getIntent().getStringExtra("role");
+
+        // Service
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        attendanceVM = new ViewModelProvider(this).get(AttendanceVM.class);
 
         // RootView
         rootView = inflater.inflate(R.layout.fragment_attendance, container, false);
@@ -128,10 +127,7 @@ public class FragmentAttendance extends Fragment {
         adapter = new AttendanceAdapter(getContext(), data);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-
-        // Service
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-        api = NetworkUtil.self().getRetrofit().create(IAttendanceAPI.class);
+        loadAdapter(attendanceVM.getAttendance(CURRENT_CLASS_ID, ROLE));
 
         if (ROLE.equalsIgnoreCase("teacher")) onCreateViewRoleTeacher();
         else onCreateViewRoleStudent();
@@ -162,9 +158,6 @@ public class FragmentAttendance extends Fragment {
     }
 
     private void onCreateViewRoleTeacher() {
-        // Load data to Recycler View display attendance session list
-        loadAdapter(api.getAttendanceRoleTeacher(CURRENT_CLASS_ID, MyAuth.getUid()));
-
         // Bottom Sheet create new session
         RelativeLayout layout = rootView.findViewById(R.id.create_session_bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(layout);
@@ -186,9 +179,6 @@ public class FragmentAttendance extends Fragment {
     private void onCreateViewRoleStudent() {
         // Set up for Button create new session
         button.setText("Điểm danh");
-
-        // Load data to Recycler View display attendance session list
-        loadAdapter(api.getAttendanceRoleStudent(CURRENT_CLASS_ID, MyAuth.getUid()));
 
         // Bottom Sheet create new session
         RelativeLayout layout = rootView.findViewById(R.id.take_attendance_bottom_sheet);
@@ -223,27 +213,16 @@ public class FragmentAttendance extends Fragment {
     }
 
     // Load data into adaptor
-    private void loadAdapter(Call<List<Attendance>> call) {
-        call.enqueue(new Callback<List<Attendance>>() {
-            @Override
-            public void onResponse(Call<List<Attendance>> call, Response<List<Attendance>> response) {
-                if (response.isSuccessful()) {
-                    data.clear();
-                    data.addAll(response.body());
-                    adapter.notifyDataSetChanged();
+    private void loadAdapter(LiveData<List<Attendance>> listLiveData) {
+        listLiveData.observe(getActivity(), rs -> {
+            data.clear();
+            data.addAll(rs);
+            adapter.notifyDataSetChanged();
 
-                    if (ROLE.equalsIgnoreCase("teacher"))
-                        loadBarChart();
-                    else
-                        loadPieChart();
-                } else {
-                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<List<Attendance>> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
+            if (ROLE.equalsIgnoreCase("teacher"))
+                loadBarChart();
+            else
+                loadPieChart();
         });
     }
     private void loadBarChart() {
@@ -351,7 +330,15 @@ public class FragmentAttendance extends Fragment {
                     dto.setLateAfter(Integer.valueOf(strLate));
                     dto.setClassId(CURRENT_CLASS_ID);
 
-                    createCodeCallAPI(dto);
+                    attendanceVM.createAttendance(dto).observe(getActivity(), rs -> {
+                        if (rs != null) {
+                            Toast.makeText(getContext(), "Tạo thành công", Toast.LENGTH_SHORT).show();
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                            data.add(0, rs);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
 
                     stopLocationUpdates();
                 }
@@ -363,28 +350,6 @@ public class FragmentAttendance extends Fragment {
         };
         getLocation();
     }
-    private void createCodeCallAPI(AttendanceCreateDTO dto) {
-        Call<Attendance> call = api.createAttendance(MyAuth.getUid(), dto);
-        call.enqueue(new Callback<Attendance>() {
-            @Override
-            public void onResponse(Call<Attendance> call, Response<Attendance> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Tạo thành công", Toast.LENGTH_SHORT).show();
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-                    data.add(0, response.body());
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<Attendance> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
-    }
-
 
     // Take attendance
     private void takeAttendance(String strCode) {
@@ -404,7 +369,15 @@ public class FragmentAttendance extends Fragment {
                     dto.setLocation(latitude + "," + longitude);
                     dto.setCode(strCode);
 
-                    takeAttendanceCallAPI(dto);
+                    attendanceVM.takeAttendance(dto).observe(getActivity(), rs -> {
+                        if (rs != null) {
+                            Toast.makeText(getContext(), "Điểm danh thành công", Toast.LENGTH_SHORT).show();
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                            data.add(0, rs);
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
 
                     stopLocationUpdates();
                 }
@@ -416,28 +389,6 @@ public class FragmentAttendance extends Fragment {
         };
         getLocation();
     }
-    private void takeAttendanceCallAPI(AttendanceTakeDTO dto) {
-        Call<Attendance> call = api.takeAttendance(MyAuth.getUid(), dto);
-        call.enqueue(new Callback<Attendance>() {
-            @Override
-            public void onResponse(Call<Attendance> call, Response<Attendance> response) {
-                if (response.isSuccessful()) {
-                    Toast.makeText(getContext(), "Điểm danh thành công", Toast.LENGTH_SHORT).show();
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-                    data.add(0, response.body());
-                    adapter.notifyDataSetChanged();
-                } else {
-                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<Attendance> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
-    }
-
 
     // Service Location
     @SuppressLint("MissingPermission")

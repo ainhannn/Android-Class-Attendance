@@ -9,16 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.classattendance.api.IClassAPI;
-import com.example.classattendance.api.IUserAPI;
 import com.example.classattendance.api.NetworkUtil;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.ClassDTO;
-import com.example.classattendance.model.SimpleClass;
-import com.example.classattendance.model.User;
 import com.example.classattendance.utils.MyAuth;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,22 +25,14 @@ public class ClassVM extends ViewModel {
         api = NetworkUtil.self().getRetrofit().create(IClassAPI.class);
     }
 
-    public LiveData<List<SimpleClass>> getClassByUID(String uid) {
-        MutableLiveData<List<SimpleClass>> result = new MutableLiveData<>();
-        MutableLiveData<List<SimpleClass>> cClasses = new MutableLiveData<>();
-        MutableLiveData<List<SimpleClass>> jClasses = new MutableLiveData<>();
-        result.setValue(new ArrayList<>());
-        IUserAPI api = NetworkUtil.self().getRetrofit().create(IUserAPI.class);
-        api.login(uid).enqueue(new Callback<User>() {
+    public LiveData<Class> getClassById(int id) {
+        MutableLiveData<Class> result = new MutableLiveData<>();
+        result.setValue(null);
+        api.getClassById(id).enqueue(new Callback<Class>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                User user = response.body();
+            public void onResponse(Call<Class> call, Response<Class> response) {
                 if (response.isSuccessful()) {
-                    List<SimpleClass> classes = new ArrayList<>();
-                    classes.addAll(user.getCreatedClasses());
-                    classes.addAll(user.getJoinedClasses());
-                    result.setValue(classes);
-
+                    result.setValue(response.body());
                     Log.e(TAG, "onResponse: successful");
                 } else {
                     Log.e(TAG, "onResponse: " + response.errorBody().toString());
@@ -54,7 +40,7 @@ public class ClassVM extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<Class> call, Throwable t) {
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });

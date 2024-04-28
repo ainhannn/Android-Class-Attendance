@@ -11,10 +11,13 @@ import androidx.lifecycle.ViewModelProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
+import com.example.classattendance.activity.LoginActivity;
+import com.example.classattendance.activity.MainActivity;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.SimpleClass;
 import com.example.classattendance.model.User;
@@ -25,6 +28,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class JoinClassFragment extends Fragment {
     private TextInputEditText classCode;
@@ -84,5 +89,23 @@ public class JoinClassFragment extends Fragment {
                 }
             });
         });
+
+        try {
+            TextView name = view.findViewById(R.id.nameTextView);
+            name.setText(MyAuth.getCurrentUser().getDisplayName());
+
+            TextView email = view.findViewById(R.id.emailTextView);
+            email.setText(MyAuth.getCurrentUser().getEmail());
+
+            CircleImageView avatar = view.findViewById(R.id.avatarImageView);
+            avatar.setImageURI(MyAuth.getCurrentUser().getPhotoUrl());
+
+            TextView switchAccount = view.findViewById(R.id.switchAccountTextView);
+            switchAccount.setOnClickListener(v -> {
+                MyAuth.signOut();
+                Intent intent = new Intent(getContext(), LoginActivity.class);
+                startActivity(intent);
+            });
+        } catch (Exception e) {}
     }
 }
