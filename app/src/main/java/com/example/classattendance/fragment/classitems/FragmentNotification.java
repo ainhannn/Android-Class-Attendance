@@ -32,6 +32,7 @@ public class FragmentNotification extends Fragment {
     private TextView classNameTextView;
     private TextView classSubTextView;
     private TextView classStatusTextView;
+    private ImageView classBackground;
     private NotificationAdapter notificationAdapter;
     private List<Notification> notificationList;
     private NotificationVM notificationVM;
@@ -49,6 +50,7 @@ public class FragmentNotification extends Fragment {
         classNameTextView = includeView.findViewById(R.id.class_name);
         classSubTextView = includeView.findViewById(R.id.class_sub);
         classStatusTextView = includeView.findViewById(R.id.status);
+        classBackground = includeView.findViewById(R.id.class_background);
 
         // Send notification
         EditText editText = view.findViewById(R.id.editText);
@@ -92,11 +94,13 @@ public class FragmentNotification extends Fragment {
                         // Pass data to include
                         classNameTextView.setText(classItem.getName());
                         classSubTextView.setText(classItem.getTeacher().getName());
-                        if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
+                        if (getActivity().getIntent().getStringExtra("role").contains("teacher")) {
                             classStatusTextView.setText("Created");
-                        else
+                            classBackground.setBackgroundResource(R.drawable.class_item_background_1);
+                        } else {
                             classStatusTextView.setText("Joined");
-
+                            classBackground.setBackgroundResource(R.drawable.class_item_background_2);
+                        }
                         // Pass data to notification list
                         notificationList.clear();
                         notificationList.addAll(classItem.getNotifications());

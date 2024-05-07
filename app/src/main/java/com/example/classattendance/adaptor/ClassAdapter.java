@@ -4,6 +4,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,12 +60,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
         public TextView className;
         public TextView classSub;
         public TextView classStatus;
+        public ImageView classBackground;
 
         public ClassViewHolder(View itemView) {
             super(itemView);
             className = itemView.findViewById(R.id.class_name);
             classSub = itemView.findViewById(R.id.class_sub);
             classStatus = itemView.findViewById(R.id.status);
+            classBackground = itemView.findViewById(R.id.class_background);
         }
 
         public void bind(final SimpleClass classroom, final OnItemClickListener listener, final OnLongClickListener longClickListener) {
@@ -73,10 +76,14 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
             className.setText(classroom.getName());
             classSub.setText(classroom.getSubject());
             try {
-                if (classroom.getTeacherId() == MyAuth.getModelUser().getId())
+                if (classroom.getTeacherId() == MyAuth.getModelUser().getId()) {
                     classStatus.setText("Created");
-                else
+                    classBackground.setBackgroundResource(R.drawable.class_item_background_1);
+                }
+                else {
                     classStatus.setText("Joined");
+                    classBackground.setBackgroundResource(R.drawable.class_item_background_2);
+                }
             } catch (Exception ex) {
                 classStatus.setText("Joined");
             }
