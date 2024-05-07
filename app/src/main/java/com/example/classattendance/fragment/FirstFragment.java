@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.classattendance.activity.ClassActivity;
@@ -53,7 +55,9 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FILTER = getActivity().getIntent().getStringExtra("filter");
+        if (getArguments() != null) {
+            FILTER = getArguments().getString("filter");
+        }
 
         bottomSheetDialog = new BottomSheetDialog(context);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
@@ -75,26 +79,14 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
 
         joinClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
-//            NavHostFragment.findNavController(FirstFragment.this)
-//                    .navigate(R.id.action_FirstFragment_to_joinClassFragment);
-
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, new JoinClassFragment())
-                    .addToBackStack(null)
-                    .commit();
+            NavHostFragment.findNavController(FirstFragment.this)
+                    .navigate(R.id.action_FirstFragment_to_joinClassFragment);
         });
 
         createClass.setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
-//            NavHostFragment.findNavController(FirstFragment.this)
-//                    .navigate(R.id.action_FirstFragment_to_createClassFragment);
-
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.nav_host_fragment_content_main, new CreateClassFragment())
-                    .addToBackStack(null)
-                    .commit();
+            NavHostFragment.findNavController(FirstFragment.this)
+                    .navigate(R.id.action_FirstFragment_to_createClassFragment);
         });
 
         binding.fab.setOnClickListener(v -> {

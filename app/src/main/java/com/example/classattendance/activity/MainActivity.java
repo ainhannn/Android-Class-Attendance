@@ -54,14 +54,17 @@ public class MainActivity extends AppCompatActivity {
             Fragment fragment = null;
             int id = item.getItemId();
             if (id == R.id.nav_school) {
-                fragment = new FirstFragment();
-                getIntent().putExtra("filter", "all");
+                Bundle bundle = new Bundle();
+                bundle.putString("filter", "all");
+                navController.navigate(navController.getCurrentDestination().getId(), bundle);
             } else if (id == R.id.nav_created_classes) {
-                fragment = new FirstFragment();
-                getIntent().putExtra("filter", "created_only");
+                Bundle bundle = new Bundle();
+                bundle.putString("filter", "created_only");
+                navController.navigate(navController.getCurrentDestination().getId(), bundle);
             } else if (id == R.id.nav_joined_classes) {
-                fragment = new FirstFragment();
-                getIntent().putExtra("filter", "joined_only");
+                Bundle bundle = new Bundle();
+                bundle.putString("filter", "joined_only");
+                navController.navigate(navController.getCurrentDestination().getId(), bundle);
 //            } else if (id == R.id.nav_notification) {
 //                fragment = new FragmentNotification();
 //            } else if (id == R.id.nav_attendance) {
@@ -78,9 +81,6 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish(); // Gọi finish() để kết thúc MainActivity này
                         });
-            }
-            if (fragment != null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, fragment).commit(); // Use the correct container ID
             }
             drawer.closeDrawer(GravityCompat.START);
             return true;

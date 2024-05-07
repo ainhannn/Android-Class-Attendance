@@ -8,8 +8,11 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.example.classattendance.fragment.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="Classroom"
         tools:layout="@layout/fragment_first">
+        <action
+            android:id="@+id/action_FirstFragment_self"
+            app:destination="@id/FirstFragment" />
         <action
             android:id="@+id/action_FirstFragment_to_createClassFragment"
             app:destination="@id/createClassFragment" />
@@ -20,18 +23,22 @@
     <fragment
         android:id="@+id/createClassFragment"
         android:name="com.example.classattendance.fragment.CreateClassFragment"
-        android:label="fragment_create_class"
+        android:label="Create New Class"
         tools:layout="@layout/fragment_create_class">
         <action
             android:id="@+id/action_createClassFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/FirstFragment"
+            app:popUpTo="@id/createClassFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/joinClassFragment"
         android:name="com.example.classattendance.fragment.JoinClassFragment"
-        android:label="JoinClassFragment" >
+        android:label="Join Class" >
         <action
             android:id="@+id/action_joinClassFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            app:destination="@id/FirstFragment"
+            app:popUpTo="@id/joinClassFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

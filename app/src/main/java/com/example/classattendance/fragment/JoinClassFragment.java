@@ -5,8 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
 import com.example.classattendance.activity.LoginActivity;
-import com.example.classattendance.activity.MainActivity;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.SimpleClass;
 import com.example.classattendance.model.User;
@@ -62,24 +61,15 @@ public class JoinClassFragment extends Fragment {
                     User user = MyAuth.getModelUser();
                     if (user != null) {
                         List<SimpleClass> jClasses = user.getJoinedClasses();
-                        jClasses.add(new SimpleClass(model));
+                        jClasses.add(0, new SimpleClass(model));
                         user.setJoinedClasses(jClasses);
                         MyAuth.setModelUser(user);
                     }
 
-                    // Đóng fragment hiện tại
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // or getSupportFragmentManager() if in AppCompatActivity
-                    fragmentManager.beginTransaction().remove(JoinClassFragment.this).commit();
+                    NavHostFragment.findNavController(JoinClassFragment.this)
+                            .navigate(R.id.action_joinClassFragment_to_FirstFragment);
 
-                    // Mở FirstFragment
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment_content_main, new FirstFragment())
-                            .commit();
-
-//                    NavHostFragment.findNavController(JoinClassFragment.this)
-//                            .navigate(R.id.action_joinClassFragment_to_FirstFragment);
-
-                    // Chuyển đến lớp vừa tạo
+                    // Chuyển đến lớp vừa tham gia
                     Intent intent = new Intent(getContext(), ClassActivity.class);
                     intent.putExtra("class_id", model.getId());
                     intent.putExtra("role", "student");

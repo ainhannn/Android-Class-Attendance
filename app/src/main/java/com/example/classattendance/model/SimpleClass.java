@@ -16,13 +16,13 @@ public class SimpleClass {
     public SimpleClass(Class model) {
         this.id = model.getId();
         this.code = model.getCode();
-        this.time = time;
-        this.teacherId = teacherId;
-        this.name = name;
-        this.section = section;
-        this.subject = subject;
-        this.room = room;
-        this.isArchived = isArchived;
+        this.time = model.getTime();
+        this.teacherId = model.getTeacher().getId();
+        this.name = model.getName();
+        this.section = model.getSection();
+        this.subject = model.getSubject();
+        this.room = model.getRoom();
+        this.isArchived = false;
     }
 
     public SimpleClass(String name, String subject) {
