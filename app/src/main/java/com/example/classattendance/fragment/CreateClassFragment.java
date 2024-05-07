@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.classattendance.activity.ClassActivity;
 import com.example.classattendance.R;
@@ -68,19 +69,13 @@ public class CreateClassFragment extends Fragment {
                     User user = MyAuth.getModelUser();
                     if (user != null) {
                         List<SimpleClass> cClasses = user.getCreatedClasses();
-                        cClasses.add(new SimpleClass(model));
+                        cClasses.add(0, new SimpleClass(model));
                         user.setCreatedClasses(cClasses);
                         MyAuth.setModelUser(user);
                     }
 
-                    // Đóng fragment hiện tại
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // or getSupportFragmentManager() if in AppCompatActivity
-                    fragmentManager.beginTransaction().remove(CreateClassFragment.this).commit();
-
-                    // Mở FirstFragment
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.nav_host_fragment_content_main, new FirstFragment())
-                            .commit();
+                    NavHostFragment.findNavController(this)
+                            .navigate(R.id.action_createClassFragment_to_FirstFragment);
 
                     // Chuyển đến lớp vừa tạo
                     Intent intent = new Intent(getContext(), ClassActivity.class);
