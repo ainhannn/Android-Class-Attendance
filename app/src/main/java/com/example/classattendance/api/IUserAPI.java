@@ -18,7 +18,7 @@ public interface IUserAPI {
 
     @POST("user/register")
     Call<User> register(
-            @Body UserDTO uid);
+            @Body UserDTO dto);
 
     @PUT("user/{UID}/update")
     Call<Void> update(

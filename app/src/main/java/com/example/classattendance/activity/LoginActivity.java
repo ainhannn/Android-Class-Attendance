@@ -3,6 +3,8 @@ package com.example.classattendance.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -11,6 +13,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.classattendance.R;
+import com.example.classattendance.model.User;
+import com.example.classattendance.model.UserDTO;
 import com.example.classattendance.utils.MyAuth;
 import com.example.classattendance.viewmodel.UserVM;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -63,6 +67,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToMain() {
+        setModelUserAfterLogin();
+
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -116,18 +122,52 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
-            // setModelUserAfterLogin();
             navigateToMain();
         } else {
             findViewById(R.id.btnBatdau).setVisibility(View.VISIBLE);
         }
     }
 
+//    private void setModelUserAfterLogin() {
+//        UserVM userVM = new ViewModelProvider(this).get(UserVM.class);
+//        User data = userVM.login(MyAuth.getUid()).getValue();
+//        if (data != null) {
+//            MyAuth.setModelUser(data);
+//        } else {
+//            UserDTO dto = new UserDTO(mAuth.getCurrentUser().getDisplayName(), mAuth.getUid());
+//            userVM.register(dto).observe(this, d -> {
+//                if (d != null) {
+//                    MyAuth.setModelUser(d);
+//                }
+//            });
+//        }
+//    }
+
     private void setModelUserAfterLogin() {
         UserVM userVM = new ViewModelProvider(this).get(UserVM.class);
-        userVM.login(MyAuth.getUid()).observe(this, data -> {
-            if (data != null) {
-                MyAuth.setModelUser(data);
+        LiveData<User> userLiveData = userVM.login(MyAuth.getUid());
+
+        userLiveData.observe(this, user -> {
+            if (user != null) {
+                MyAuth.setModelUser(user);
+            }
+        });
+
+        userLiveData.observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(User user) {
+                // Khi quá trình đăng nhập kết thúc
+                if (user == null) {
+                    // Thực hiện đăng ký người dùng mới
+                    UserDTO dto = new UserDTO(mAuth.getCurrentUser().getDisplayName(), mAuth.getUid());
+                    userVM.register(dto).observe(LoginActivity.this, registeredUser -> {
+                        if (registeredUser != null) {
+                            MyAuth.setModelUser(registeredUser);
+                        }
+                    });
+                }
+                // Loại bỏ quan sát sau khi đã hoàn tất đăng ký người dùng mới
+                userLiveData.removeObserver(this);
             }
         });
     }
