@@ -48,6 +48,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
     @Override
     public void onBindViewHolder(@NonNull AttendanceViewHolder holder, int position) {
         Attendance attendance = attendanceList.get(position);
+        holder.indexTextView.setText(String.valueOf(position+1));
         holder.timeTextView.setText(String.valueOf(attendance.getTime()));
         holder.presentCountTextView.setText(String.valueOf(attendance.getPresentCount()));
         holder.lateCountTextView.setText(String.valueOf(attendance.getLateCount()));
@@ -70,6 +71,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
     }
 
     public class AttendanceViewHolder extends RecyclerView.ViewHolder {
+        TextView indexTextView;
         TextView timeTextView;
         TextView presentCountTextView;
         TextView lateCountTextView;
@@ -80,6 +82,7 @@ public class AttendanceAdapter extends RecyclerView.Adapter<AttendanceAdapter.At
 
         public AttendanceViewHolder(@NonNull View itemView) {
             super(itemView);
+            indexTextView = itemView.findViewById(R.id.listIndex);
             timeTextView = itemView.findViewById(R.id.listTime);
             presentCountTextView = itemView.findViewById(R.id.present);
             lateCountTextView = itemView.findViewById(R.id.late);

@@ -21,8 +21,10 @@ import com.example.classattendance.R;
 import com.example.classattendance.model.Class;
 import com.example.classattendance.model.Notification;
 import com.example.classattendance.adaptor.NotificationAdapter;
+import com.example.classattendance.utils.MyAuth;
 import com.example.classattendance.viewmodel.ClassVM;
 import com.example.classattendance.viewmodel.NotificationVM;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +53,15 @@ public class FragmentNotification extends Fragment {
         classSubTextView = includeView.findViewById(R.id.class_sub);
         classStatusTextView = includeView.findViewById(R.id.status);
         classBackground = includeView.findViewById(R.id.class_background);
+        classBackground.setBackgroundResource(R.drawable.noti_background);
 
         // Send notification
+        ShapeableImageView avt = view.findViewById(R.id.user);
         EditText editText = view.findViewById(R.id.editText);
         ImageView iconSend = view.findViewById(R.id.iconSend);
+        if (MyAuth.getCurrentUser() != null) {
+            avt.setImageURI(MyAuth.getCurrentUser().getPhotoUrl());
+        }
         iconSend.setOnClickListener(v -> {
             String content = editText.getText().toString();
             if (!content.isEmpty()) {
@@ -93,14 +100,12 @@ public class FragmentNotification extends Fragment {
 
                         // Pass data to include
                         classNameTextView.setText(classItem.getName());
-                        classSubTextView.setText(classItem.getTeacher().getName());
-                        if (getActivity().getIntent().getStringExtra("role").contains("teacher")) {
+                        classSubTextView.setText("Giáo viên: " + classItem.getTeacher().getName());
+                        if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
                             classStatusTextView.setText("Created");
-                            classBackground.setBackgroundResource(R.drawable.class_item_background_1);
-                        } else {
+                        else
                             classStatusTextView.setText("Joined");
-                            classBackground.setBackgroundResource(R.drawable.class_item_background_2);
-                        }
+
                         // Pass data to notification list
                         notificationList.clear();
                         notificationList.addAll(classItem.getNotifications());

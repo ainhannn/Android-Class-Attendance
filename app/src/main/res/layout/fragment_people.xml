@@ -9,6 +9,31 @@
         android:id="@+id/include"
         layout="@layout/class_item" />
 
+    <TextView
+        android:id="@+id/number_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="28dp"
+        android:fontWeight="200"
+        android:text="Sĩ số: "
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/include" />
+
+    <TextView
+        android:id="@+id/member_length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontWeight="200"
+        android:textSize="22sp"
+        android:text="0"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/number_txt"
+        app:layout_constraintTop_toBottomOf="@id/include" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPeople"
         android:layout_width="0dp"
@@ -17,7 +42,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/include"
+        app:layout_constraintTop_toBottomOf="@id/number_txt"
         tools:listitem="@layout/people_list_item" />
 
 

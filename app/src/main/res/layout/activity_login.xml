@@ -13,7 +13,7 @@
         android:layout_marginStart="116dp"
         android:layout_marginEnd="117dp"
         android:layout_marginBottom="353dp"
-        android:src="@drawable/ic_google_logo"></ImageView>
+        android:src="@drawable/logo"/>
 
     <TextView
         android:id="@+id/textView"
@@ -22,10 +22,10 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="122dp"
-        android:layout_marginEnd="65dp"
+        android:layout_marginStart="126dp"
+        android:layout_marginEnd="61dp"
         android:layout_marginBottom="298dp"
-        android:text="Google Classroom"
+        android:text="Class Attendance"
         android:textSize="20dp" />
 
     <TextView
@@ -38,7 +38,7 @@
         android:layout_marginStart="9dp"
         android:layout_marginEnd="7dp"
         android:layout_marginBottom="228dp"
-        android:text="Giúp nhà giáo dục và học viên giao tiếp, tiết kiệm thời gian và sắp xếp nội dung một cách khoa học."
+        android:text="Ứng dụng mở rộng từ Google Classroom, giúp việc điểm danh trở nên dễ dàng, nhanh chóng và dễ quản lý hơn."
         android:textAlignment="center"
         android:textSize="14dp" />
 

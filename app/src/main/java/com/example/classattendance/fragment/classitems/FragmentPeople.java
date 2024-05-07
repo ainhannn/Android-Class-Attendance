@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -24,6 +25,8 @@ public class FragmentPeople extends Fragment {
     private TextView classNameTextView;
     private TextView classSubTextView;
     private TextView classStatusTextView;
+    private ImageView classBackground;
+    private TextView memberLength;
     private MemberAdapter memberAdapter;
     private List<SimpleUser> memberList;
 
@@ -38,8 +41,10 @@ public class FragmentPeople extends Fragment {
         classNameTextView = includeView.findViewById(R.id.class_name);
         classSubTextView = includeView.findViewById(R.id.class_sub);
         classStatusTextView = includeView.findViewById(R.id.status);
+        classBackground = includeView.findViewById(R.id.class_background);
 
         // Member List
+        memberLength = view.findViewById(R.id.member_length);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewPeople);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         memberList = new ArrayList<>();
@@ -53,7 +58,8 @@ public class FragmentPeople extends Fragment {
                     if (rs != null) {
                         // Pass data to include
                         classNameTextView.setText(rs.getName());
-                        classSubTextView.setText(rs.getTeacher().getName());
+                        classSubTextView.setText("Giáo viên: " + rs.getTeacher().getName());
+                        classBackground.setBackgroundResource(R.drawable.member_background);
                         if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
                             classStatusTextView.setText("Created");
                         else
@@ -63,6 +69,7 @@ public class FragmentPeople extends Fragment {
                         memberList.clear();
                         memberList.addAll(rs.getMembers());
                         memberAdapter.notifyDataSetChanged();
+                        memberLength.setText(String.valueOf(memberAdapter.getItemCount()));
                     }
                 });
 
