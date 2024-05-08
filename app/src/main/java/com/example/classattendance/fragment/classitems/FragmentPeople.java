@@ -1,6 +1,7 @@
 package com.example.classattendance.fragment.classitems;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,9 @@ public class FragmentPeople extends Fragment {
         classSubTextView = includeView.findViewById(R.id.class_sub);
         classStatusTextView = includeView.findViewById(R.id.status);
         classBackground = includeView.findViewById(R.id.class_background);
+        classNameTextView.setTextColor(Color.WHITE);
+        classSubTextView.setTextColor(Color.WHITE);
+        classStatusTextView.setTextColor(Color.WHITE);
 
         // Member List
         memberLength = view.findViewById(R.id.member_length);
