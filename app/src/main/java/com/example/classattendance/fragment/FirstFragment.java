@@ -21,6 +21,7 @@ import com.example.classattendance.R;
 import com.example.classattendance.databinding.FragmentFirstBinding;
 import com.example.classattendance.model.SimpleClass;
 import com.example.classattendance.adaptor.ClassAdapter;
+import com.example.classattendance.model.UserDTO;
 import com.example.classattendance.utils.MyAuth;
 import com.example.classattendance.viewmodel.ClassVM;
 import com.example.classattendance.viewmodel.UserVM;
@@ -98,7 +99,7 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     public void onStart() {
         super.onStart();
         if (MyAuth.getModelUser() == null) {
-            userVM.login(MyAuth.getUid()).observe(this, rs -> {
+            userVM.login(new UserDTO(MyAuth.getCurrentUser().getDisplayName(), MyAuth.getUid())).observe(this, rs -> {
                 MyAuth.setModelUser(rs);
                 loadAdaptor();
             });
@@ -168,17 +169,19 @@ public class FirstFragment extends Fragment implements ClassAdapter.OnItemClickL
     }
 
     private void loadAdaptor() {
-        data.clear();
+        if (MyAuth.getModelUser() != null) {
+            data.clear();
 
-        if (FILTER != null && FILTER.equalsIgnoreCase("created_only")) {
-            data.addAll(MyAuth.getModelUser().getCreatedClasses());
-        } else if (FILTER != null && FILTER.equalsIgnoreCase("joined_only")) {
-            data.addAll(MyAuth.getModelUser().getJoinedClasses());
-        } else {
-            data.addAll(MyAuth.getModelUser().getCreatedClasses());
-            data.addAll(MyAuth.getModelUser().getJoinedClasses());
+            if (FILTER != null && FILTER.equalsIgnoreCase("created_only")) {
+                data.addAll(MyAuth.getModelUser().getCreatedClasses());
+            } else if (FILTER != null && FILTER.equalsIgnoreCase("joined_only")) {
+                data.addAll(MyAuth.getModelUser().getJoinedClasses());
+            } else {
+                data.addAll(MyAuth.getModelUser().getCreatedClasses());
+                data.addAll(MyAuth.getModelUser().getJoinedClasses());
+            }
+
+            adapter.notifyDataSetChanged();
         }
-
-        adapter.notifyDataSetChanged();
     }
 }

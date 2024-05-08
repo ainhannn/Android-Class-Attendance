@@ -100,11 +100,13 @@ public class FragmentNotification extends Fragment {
 
                         // Pass data to include
                         classNameTextView.setText(classItem.getName());
-                        classSubTextView.setText("Giáo viên: " + classItem.getTeacher().getName());
-                        if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
+                        if (getActivity().getIntent().getStringExtra("role").contains("teacher")) {
                             classStatusTextView.setText("Created");
-                        else
+                            classSubTextView.setText("Mã vào lớp: " + classItem.getCode());
+                        } else {
+                            classSubTextView.setText("Giáo viên: " + classItem.getTeacher().getName());
                             classStatusTextView.setText("Joined");
+                        }
 
                         // Pass data to notification list
                         notificationList.clear();

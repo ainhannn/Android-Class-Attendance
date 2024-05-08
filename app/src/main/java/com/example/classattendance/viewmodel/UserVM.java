@@ -24,9 +24,9 @@ public class UserVM extends ViewModel {
         api = NetworkUtil.self().getRetrofit().create(IUserAPI.class);
     }
 
-    public LiveData<User> login(String uid) {
+    public LiveData<User> login(UserDTO user) {
         MutableLiveData<User> result = new MutableLiveData<>();
-        Call<User> call = api.login(uid);
+        Call<User> call = api.login(user);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
@@ -44,27 +44,6 @@ public class UserVM extends ViewModel {
             }
         });
         return result;
-    }
 
-    public LiveData<User> register(UserDTO dto) {
-        MutableLiveData<User> result = new MutableLiveData<>();
-        Call<User> call = api.register(dto);
-        call.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (response.isSuccessful()) {
-                    result.setValue(response.body());
-                    Log.e(TAG, "onResponse: successful");
-                } else {
-                    result.setValue(null);
-                    Log.e(TAG, "onResponse: " + response.errorBody().toString());
-                }
-            }
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                Log.e(TAG, "onFailure: " + t.getMessage());
-            }
-        });
-        return result;
     }
 }

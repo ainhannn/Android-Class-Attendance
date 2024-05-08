@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void navigateToMain() {
-        // setModelUserAfterLogin();
+        setModelUserAfterLogin();
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
@@ -144,31 +144,15 @@ public class LoginActivity extends AppCompatActivity {
 //    }
 
     private void setModelUserAfterLogin() {
-        UserVM userVM = new ViewModelProvider(this).get(UserVM.class);
-        LiveData<User> userLiveData = userVM.login(MyAuth.getUid());
+        if (mAuth.getCurrentUser() != null) {
+            UserDTO dto = new UserDTO(mAuth.getCurrentUser().getDisplayName(), mAuth.getUid());
 
-        userLiveData.observe(this, user -> {
-            if (user != null) {
-                MyAuth.setModelUser(user);
-            }
-        });
-
-        userLiveData.observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(User user) {
-                // Khi quá trình đăng nhập kết thúc
-                if (user == null) {
-                    // Thực hiện đăng ký người dùng mới
-                    UserDTO dto = new UserDTO(mAuth.getCurrentUser().getDisplayName(), mAuth.getUid());
-                    userVM.register(dto).observe(LoginActivity.this, registeredUser -> {
-                        if (registeredUser != null) {
-                            MyAuth.setModelUser(registeredUser);
-                        }
-                    });
+            UserVM userVM = new ViewModelProvider(this).get(UserVM.class);
+            userVM.login(dto).observe(LoginActivity.this, registeredUser -> {
+                if (registeredUser != null) {
+                    MyAuth.setModelUser(registeredUser);
                 }
-                // Loại bỏ quan sát sau khi đã hoàn tất đăng ký người dùng mới
-                userLiveData.removeObserver(this);
-            }
-        });
+            });
+        }
     }
 }

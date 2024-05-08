@@ -31,6 +31,6 @@ public class MyAuth {
     }
 
     public static String getUid() {
-        return modelUser != null ? modelUser.getUid() : UID_DEFAULT;
+        return FirebaseAuth.getInstance() != null ? FirebaseAuth.getInstance().getUid() : UID_DEFAULT;
     }
 }

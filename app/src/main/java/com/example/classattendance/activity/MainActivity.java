@@ -16,6 +16,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.example.classattendance.R;
 import com.example.classattendance.databinding.ActivityMainBinding;
 import com.example.classattendance.fragment.FirstFragment;
+import com.example.classattendance.model.User;
 import com.example.classattendance.utils.MyAuth;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                 GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
                 googleSignInClient.signOut().addOnCompleteListener(this,
                         task -> {
-                            // MyAuth.signOut();
+                            MyAuth.signOut();
                             // Intent mới với cờ CLEAR_TOP để làm sạch ngăn xếp hoạt động
                             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

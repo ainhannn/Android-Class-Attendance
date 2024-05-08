@@ -335,7 +335,7 @@ public class FragmentAttendance extends Fragment {
                             Toast.makeText(getContext(), "Tạo thành công", Toast.LENGTH_SHORT).show();
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                            data.add(0, rs);
+                            data.add(rs);
                             adapter.notifyDataSetChanged();
                         }
                     });
@@ -373,9 +373,7 @@ public class FragmentAttendance extends Fragment {
                         if (rs != null) {
                             Toast.makeText(getContext(), "Điểm danh thành công", Toast.LENGTH_SHORT).show();
                             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-                            data.add(0, rs);
-                            adapter.notifyDataSetChanged();
+                            loadAdapter(attendanceVM.getAttendance(CURRENT_CLASS_ID, ROLE));
                         }
                     });
 

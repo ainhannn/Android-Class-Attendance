@@ -12,9 +12,9 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface IUserAPI {
-    @GET("user/login")
+    @POST("user/login")
     Call<User> login(
-            @Query("UID") String uid);
+            @Body UserDTO dto);
 
     @POST("user/register")
     Call<User> register(

@@ -62,12 +62,14 @@ public class FragmentPeople extends Fragment {
                     if (rs != null) {
                         // Pass data to include
                         classNameTextView.setText(rs.getName());
-                        classSubTextView.setText("Giáo viên: " + rs.getTeacher().getName());
                         classBackground.setBackgroundResource(R.drawable.member_background);
-                        if (getActivity().getIntent().getStringExtra("role").contains("teacher"))
+                        if (getActivity().getIntent().getStringExtra("role").contains("teacher")) {
                             classStatusTextView.setText("Created");
-                        else
+                            classSubTextView.setText("Mã vào lớp: " + rs.getCode());
+                        } else {
+                            classSubTextView.setText("Giáo viên: " + rs.getTeacher().getName());
                             classStatusTextView.setText("Joined");
+                        }
 
                         // Pass data to people list
                         memberList.clear();
