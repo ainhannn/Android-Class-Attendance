@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:2.0.0-Beta5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/Library/Android/sdk/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.0-Beta5/763714203113a7f4a5477122be0c6c588df0116e/kotlin-stdlib-2.0.0-Beta5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/Library/Android/sdk/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.0-Beta5/2ad14aed781c4a73ed4dbb421966d408a0a06686/kotlin-stdlib-2.0.0-Beta5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/Library/Android/sdk/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/2.0.0-Beta5/84cdfeb1d3e1b3f72cc4e0a3803c85c4727312f1/kotlin-stdlib-2.0.0-Beta5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
